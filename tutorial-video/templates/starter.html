@@ -1,0 +1,610 @@
+<!doctype html>
+<!--
+  Tutorial starter (Professional style): a title, a 3-step HUD, a camera zoom per step, a spotlight before each click, cursor, typing, a keycap, a dropdown, a toast and a recap
+  Watch     open in Chrome or Edge, click play. Space play/pause · ←/→ seek · M mute · F fullscreen · H hide controls
+  Record    film.html?record → await window.videoReady → window.seek(t) per frame (silent, UI hidden)
+  Score     window.renderWav({ rate, mono }) → WAV Blob of the whole score (run it in its own ?record page load)
+  Params    ?t=12 opens at 12 s · ?autoplay · ?mute · ?loop
+  Rules     every visual is a pure function of time t (render(t)); no CSS transitions/animations inside #stage
+  Creative  --creativity:medium --typography:medium --animation:medium --motion:medium  (section 0: record the levels you resolve here)
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acme — How to invite your team</title>
+<style>
+/* ===================== style tokens: swap for a preset (section 5) or the brand ===================== */
+:root{--bg:#f1f5f9;--fg:#0f172a;--muted:#64748b;--line:#e2e8f0;--panel:#ffffff;--dark:#0f172a;--dark-ink:#f8fafc;--accent:#1d4ed8;--accent-ink:#ffffff;--accent-soft:#e0e7ff;--warn:#b45309;--ok:#047857;
+  --display:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;--ui:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  --w-display:300;--w-strong:600;--fs-display:120px;--track:-0.005em;--track-caps:0.1em;--margin:150px;--radius:8px;--btn-radius:6px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:var(--ui);color:var(--fg);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:var(--bg);visibility:hidden}
+.ready #stage{visibility:visible}
+.scene{position:absolute;inset:0;overflow:hidden}
+.light{background:var(--bg);color:var(--fg)} .dark{background:var(--dark);color:var(--dark-ink)} .brand{background:var(--accent);color:var(--accent-ink)}
+/* masked words and letters: generous padding so descenders survive at rest */
+.wm{display:inline-block;overflow:hidden;vertical-align:top;padding:.08em .06em .24em;margin:-.08em -.06em -.24em;text-indent:0}   /* text-indent:0 so a hung quote (text-indent on the block) never shifts words inside their masks */
+.w,.ch{display:inline-block}
+.h1{position:absolute;left:var(--margin);font-family:var(--display);font-weight:var(--w-display);font-size:var(--fs-display);line-height:1.08;letter-spacing:var(--track);white-space:nowrap;transform-origin:0 50%}
+.h1.c{left:0;right:0;text-align:center;transform-origin:50% 50%}
+.ln{display:block;white-space:nowrap}
+.eb{font-family:var(--display);font-weight:var(--w-strong);font-size:22px;letter-spacing:var(--track-caps);text-transform:uppercase;display:inline-flex;align-items:center;white-space:nowrap}
+.sep{display:inline-block;width:2px;height:20px;background:currentColor;opacity:.25;margin:0 16px}
+.num{font-variant-numeric:tabular-nums}
+.sub{font-family:var(--display);font-weight:var(--w-display);font-size:40px;line-height:1.3;letter-spacing:var(--track)}
+.xa{opacity:0}
+.caret{display:inline-block;width:2px;height:1.05em;background:var(--accent);margin-left:1px;vertical-align:-.15em}
+/* end-card lockup: REPLACE the placeholder mark with the official logo */
+.lock{position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:40px}
+.mk{display:block;width:140px;height:140px;overflow:hidden;flex:none}
+.mk svg{display:block;width:100%;height:100%}
+.wd{display:inline-block;overflow:hidden;padding:.06em .05em .16em;font-family:var(--display);font-weight:var(--w-strong);font-size:132px;line-height:1;letter-spacing:var(--track)}
+.wd > span{display:inline-block}
+.cta{display:inline-flex;align-items:center;gap:14px;height:84px;padding:0 38px;border-radius:var(--btn-radius);background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:var(--w-strong);font-size:32px}
+/* ---------- player UI (outside the stage) ---------- */
+#ui{position:fixed;inset:0;pointer-events:none;font:15px system-ui,sans-serif;color:#fff;z-index:10}
+.rec #ui{display:none}
+#start{position:absolute;inset:0;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);pointer-events:auto;cursor:pointer;transition:opacity .4s}
+#start.gone{opacity:0;pointer-events:none}
+#start b{width:96px;height:96px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font-size:34px;padding-left:6px}
+#start em{font-style:normal;font-size:24px;font-weight:600}
+#start small{opacity:.8}
+#bar{position:absolute;left:24px;right:24px;bottom:18px;height:22px;display:flex;align-items:center;pointer-events:auto;cursor:pointer;opacity:0;transition:opacity .3s}
+.started #bar{opacity:1} .started.idle #bar{opacity:0} .idle{cursor:none}
+#bar div{position:relative;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.3)}
+#bar i{position:absolute;left:0;top:0;height:100%;border-radius:2px;background:#fff;width:0}
+/* ===================== this film ===================== */
+#tEb{position:absolute;left:var(--margin);top:400px;color:var(--accent)}
+#tT{top:446px}
+/* HUD: the step, always in the same place */
+#hud{position:absolute;left:240px;top:44px;right:240px;height:70px;display:flex;align-items:center;gap:22px;opacity:0;z-index:12}
+#hud .n{font:600 20px var(--mono);color:var(--accent);white-space:nowrap}
+#hud .t{font:500 34px var(--display);letter-spacing:var(--track);white-space:nowrap}
+#hud .seg{margin-left:auto;display:flex;gap:8px}
+#hud .seg i{width:90px;height:6px;border-radius:3px;background:#cbd5e1;overflow:hidden}
+#hud .seg i b{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:0 50%}
+/* the app window */
+#win{position:absolute;left:240px;top:136px;width:1440px;height:880px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--line);overflow:hidden;opacity:0}
+#chrome{position:absolute;left:0;top:0;right:0;height:44px;background:#f8fafc;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 18px}
+#chrome i{width:12px;height:12px;border-radius:50%;background:#dbe1e8}
+#url{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:520px;height:28px;border-radius:6px;background:#fff;box-shadow:0 0 0 1px var(--line);font:13.5px var(--ui);color:#475569;display:flex;align-items:center;justify-content:center}
+#vp{position:absolute;left:0;top:44px;width:1440px;height:836px;overflow:hidden}
+#app{position:absolute;left:0;top:0;width:1600px;height:929px;transform-origin:0 0;display:flex;background:#fff;font:16px var(--ui);color:#0f172a}
+.sb{width:250px;flex:none;border-right:1px solid #e2e8f0;padding:24px 16px;display:flex;flex-direction:column}
+.sb .lg{display:flex;align-items:center;gap:12px;font-weight:600;font-size:19px;margin:0 10px 30px}
+.sb .lg svg{width:30px;height:30px;color:var(--accent)}
+.nav{display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;border-radius:8px;color:#475569;font-weight:500;margin-bottom:4px}
+.nav.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav i{width:18px;height:18px;border-radius:4px;background:currentColor;opacity:.35}
+.sb .push{margin-top:auto}
+.main{position:relative;flex:1;padding:36px 48px}
+.pg{position:absolute;left:48px;top:36px;right:48px;bottom:0}
+.pg h2{font-size:30px;font-weight:600}
+.pg .dim{color:#64748b;margin-top:6px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+.cards div{height:150px;border:1px solid #e2e8f0;border-radius:12px;padding:20px;color:#64748b}
+.cards b{display:block;color:#0f172a;font-size:30px;margin-top:10px}
+.tabs{display:flex;gap:28px;margin-top:26px;border-bottom:1px solid #e2e8f0}
+.tab{padding:12px 2px;font-weight:500;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--accent);border-color:var(--accent);font-weight:600}
+.panel{margin-top:28px}
+.inv{display:flex;gap:12px;align-items:center}
+.field{flex:1;height:50px;border-radius:8px;box-shadow:inset 0 0 0 1px #cbd5e1;display:flex;align-items:center;padding:0 16px;font-size:17px;color:#0f172a}
+.field.on{box-shadow:inset 0 0 0 2px var(--accent)}
+.field .ph{color:#94a3b8}
+.dd{position:relative;width:170px;height:50px;border-radius:8px;box-shadow:inset 0 0 0 1px #cbd5e1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:17px}
+.dd.on{box-shadow:inset 0 0 0 2px var(--accent)}
+.menu{position:absolute;left:0;top:56px;width:170px;background:#fff;border-radius:8px;box-shadow:0 0 0 1px #e2e8f0;padding:6px;z-index:5;opacity:0}
+.menu div{position:relative;height:42px;display:flex;align-items:center;padding:0 12px;border-radius:6px}
+.menu .hl{position:absolute;left:6px;right:6px;height:42px;border-radius:6px;background:var(--accent-soft);top:6px}
+.btn{height:50px;padding:0 20px;border-radius:var(--btn-radius);display:inline-flex;align-items:center;font-weight:600;font-size:16px;white-space:nowrap;transform-origin:50% 50%}
+.btn.pri{background:var(--accent);color:#fff}
+.mem{margin-top:30px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}
+.mr{display:grid;grid-template-columns:44px 1fr 140px 120px;align-items:center;gap:14px;height:62px;padding:0 20px;border-top:1px solid #f1f5f9}
+.mr:first-child{border-top:0}
+.mr .av{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:13px;font-weight:700}
+.mr .pend{font-size:13px;font-weight:600;color:var(--warn);background:#fef3c7;border-radius:999px;padding:4px 10px;width:max-content}
+.toast{position:absolute;right:30px;bottom:30px;display:flex;align-items:center;gap:12px;height:56px;padding:0 22px;border-radius:10px;background:#0f172a;color:#fff;font-weight:500;opacity:0}
+.toast svg{width:20px;height:20px;fill:none;stroke:#34d399;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+/* overlays (stage space) */
+#cur{position:absolute;left:0;top:0;width:34px;height:34px;z-index:20;transform-origin:4px 3px;opacity:0}
+#cur svg{width:100%;height:100%;display:block}
+#rip{position:absolute;left:0;top:0;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;border:3px solid var(--accent);z-index:19;opacity:0}
+#spot{position:absolute;left:0;top:0;border-radius:12px;box-shadow:0 0 0 4000px rgba(15,23,42,.45);z-index:15;opacity:0}
+#key{position:absolute;left:0;top:0;z-index:18;display:flex;gap:10px;opacity:0}
+#key span{min-width:120px;height:74px;padding:0 22px;border-radius:12px;background:#fff;box-shadow:inset 0 -5px 0 #cbd5e1,0 0 0 1px #cbd5e1;display:grid;place-items:center;font:600 26px var(--ui);color:#0f172a}
+/* recap */
+#rT{top:250px}
+.rc{position:absolute;left:var(--margin);display:flex;align-items:center;gap:26px;font:300 56px var(--display);letter-spacing:var(--track);opacity:0}
+.rc .ck{position:relative;width:52px;height:52px;border-radius:50%;border:3px solid #cbd5e1;flex:none}
+.rc .ck b{position:absolute;inset:-3px;border-radius:50%;background:var(--ok);transform:scale(0)}
+.rc .ck svg{position:absolute;inset:-3px;width:52px;height:52px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:17;stroke-dashoffset:17}
+#rNext{position:absolute;left:var(--margin);top:850px;font:500 30px var(--display);color:var(--accent);opacity:0}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- placeholder mark: REPLACE with the official logo path (fill="currentColor"; fill-rule="evenodd" gives a knockout) -->
+  <symbol id="mark" viewBox="0 0 100 100"><path fill="currentColor" fill-rule="evenodd" d="M22 0h56a22 22 0 0 1 22 22v56a22 22 0 0 1-22 22H22A22 22 0 0 1 0 78V22A22 22 0 0 1 22 0ZM50 25 74 75H26Z"/></symbol>
+  <symbol id="tick" viewBox="0 0 24 24"><path d="M6.2 12.6l3.9 3.9 7.7-8.4"/></symbol>
+  <symbol id="cursor" viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.4 3 6.7 3.1-1.4-3-6.6 6.3-.2z" fill="#111" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+</defs></svg>
+
+<div id="stage">
+  <section class="scene light" id="sA"><div class="eb" id="tEb">Tutorial · 3 steps · 1 minute</div><div class="h1" id="tT">How to invite your team</div></section>
+  <section class="scene light" id="sB">
+    <div id="hud"><span class="n" id="hudN">Step 1 of 3</span><span class="t" id="hudT">Open Settings</span><span class="seg"><i><b></b></i><i><b></b></i><i><b></b></i></span></div>
+    <div id="win"><div id="chrome"><i></i><i></i><i></i><div id="url"><span id="urlTx">app.acme.com/home</span></div></div>
+      <div id="vp"><div id="app">
+        <div class="sb"><div class="lg"><svg viewBox="0 0 100 100"><use href="#mark"/></svg>Acme</div>
+          <div class="nav on" id="nHome"><i></i>Home</div><div class="nav"><i></i>Projects</div><div class="nav"><i></i>Reports</div>
+          <div class="push"></div><div class="nav" id="nSet"><i></i>Settings</div></div>
+        <div class="main">
+          <div class="pg" id="pHome"><h2>Welcome back, Alex</h2><p class="dim">Three projects need your attention.</p>
+            <div class="cards"><div>Open projects<b>12</b></div><div>Due this week<b>4</b></div><div>Team members<b>2</b></div></div></div>
+          <div class="pg" id="pSet"><h2>Settings</h2><div class="tabs"><span class="tab on" id="tbProf">Profile</span><span class="tab" id="tbTeam">Team</span><span class="tab">Billing</span></div>
+            <div class="panel" id="pnProf"><p class="dim">Name, photo and notification preferences.</p></div>
+            <div class="panel" id="pnTeam"><div class="inv"><div class="field" id="fld"><span class="ph" id="fldPh">name@company.com</span><span id="fldTx"></span><i class="caret" id="fldCar"></i></div>
+                <div class="dd" id="dd"><span id="ddTx">Viewer</span><span>▾</span><div class="menu" id="menu"><span class="hl" id="hl"></span><div>Viewer</div><div>Editor</div><div>Admin</div></div></div>
+                <span class="btn pri" id="bSend">Send invite</span></div>
+              <div class="mem"><div class="mr"><span class="av">AL</span><span>Alex Lee · alex@acme.com</span><span>Owner</span><span></span></div>
+                <div class="mr"><span class="av">MC</span><span>Maya Chen · maya@acme.com</span><span>Admin</span><span></span></div>
+                <div class="mr" id="newRow"><span class="av">JR</span><span>jordan@northwind.co</span><span id="newRole">Editor</span><span class="pend">Pending</span></div></div></div>
+            <div class="toast" id="toast"><svg viewBox="0 0 24 24"><use href="#tick"/></svg>Invite sent to jordan@northwind.co</div></div>
+        </div></div></div></div>
+    <div id="spot"></div><div id="key"><span>Enter ⏎</span></div><div id="rip"></div><div id="cur"><svg viewBox="0 0 24 24"><use href="#cursor"/></svg></div>
+  </section>
+  <section class="scene light" id="sC">
+    <div class="h1" id="rT">You’re all set.</div>
+    <div class="rc" style="top:470px"><span class="ck"><b></b><svg viewBox="0 0 24 24"><use href="#tick"/></svg></span>Open Settings</div>
+    <div class="rc" style="top:580px"><span class="ck"><b></b><svg viewBox="0 0 24 24"><use href="#tick"/></svg></span>Add their email</div>
+    <div class="rc" style="top:690px"><span class="ck"><b></b><svg viewBox="0 0 24 24"><use href="#tick"/></svg></span>Choose a role and send</div>
+    <div id="rNext">Next: set project permissions →</div>
+  </section>
+</div>
+
+<div id="ui">
+  <div id="start"><b>▶</b><em>Acme — How to invite your team</em><small>0:20 · Sound on · Space play/pause · ←/→ seek · M mute · F fullscreen · H hide controls</small></div>
+  <div id="bar"><div><i id="barFill"></i></div></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const Q = new URLSearchParams(location.search), REC = Q.has('record');
+
+/* ===================== timeline: authored in beats, so a tempo change moves everything together ===================== */
+const SW = 1920, SH = 1080;
+const BPM = 96, BEAT = 60 / BPM, b = n => +(n * BEAT).toFixed(4);
+const DUR = b(32), POSTER = b(30.5);
+const MOTION = { enter: 0.8, stagger: 0.09, exit: 0.4 };   // Professional preset
+const MIX = { master: 1, drums: 0.6, bass: 0.9, keys: 1.1, pads: 1.1, reverb: 0.35, underVO: 0.28 };
+const DUCK = [];
+const A_VW = 1440, A_VH = 836, A_AW = 1600, A_AH = 929;   // app 1600×929 seen through a 1440×836 viewport
+const STEP_T = [b(4), b(11), b(19)];                       // the HUD changes at each step
+const STEP_N = ['Open Settings', 'Add their email', 'Choose a role and send'];
+const C_SET = b(8), C_TEAM = b(13), C_FLD = b(14.2), TYPE_A = b(14.6), TYPE_Z = b(16.6), KEY_T = b(17.2), C_DD = b(20.5), C_ED = b(22.3), C_SEND = b(24.5);
+const RECAP = [b(29), b(29.6), b(30.2)];
+
+/* ===================== helpers: every visual is a pure function of time t ===================== */
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a = 0, c = 1) => (v < a ? a : v > c ? c : v), mix = (a, c, k) => a + (c - a) * k;
+const Ez = {
+  lin: x => x, out: x => 1 - (1 - x) ** 3, out4: x => 1 - (1 - x) ** 4, in: x => x * x * x,
+  expo: x => (x >= 1 ? 1 : 1 - 2 ** (-10 * x)),                  // entrances
+  q5: x => (x < 0.5 ? 16 * x ** 5 : 1 - (-2 * x + 2) ** 5 / 2),   // moves, wipes, camera
+  back: x => 1 + 2.25 * (x - 1) ** 3 + 1.25 * (x - 1) ** 2,       // small pops only
+  elastic: x => (x <= 0 ? 0 : x >= 1 ? 1 : 2 ** (-10 * x) * Math.sin((x * 10 - 0.75) * 2.094) + 1),   // fun styles only
+};
+const P = (t, a, c, e = Ez.out) => e(clamp((t - a) / (c - a)));   // eased 0→1 progress of t through [a, c]
+function S(el, { x = 0, y = 0, s = 1, sx = 1, sy = 1, r = 0, o } = {}) {   // transform + opacity, cached (never mix with st(el,'transform'))
+  const tf = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)` + (r ? ` rotate(${r.toFixed(2)}deg)` : '') + (s !== 1 ? ` scale(${s.toFixed(4)})` : '') + (sx !== 1 || sy !== 1 ? ` scale(${sx.toFixed(4)},${sy.toFixed(4)})` : '');
+  if (el._tf !== tf) { el.style.transform = tf; el._tf = tf; }
+  if (o != null) { const v = clamp(o).toFixed(3); if (el._op !== v) { el.style.opacity = v; el._op = v; } }
+}
+const st = (el, p, v) => { if (el['_' + p] !== v) { if (p.startsWith('--')) el.style.setProperty(p, v); else el.style[p] = v; el['_' + p] = v; } };
+const show = (el, on) => { st(el, 'display', on ? '' : 'none'); return on; };   // gate every scene by time
+const txt = (el, s) => { if (el._tx !== s) { el.textContent = s; el._tx = s; } };
+const cls = (el, c, on) => { if (el['_c' + c] !== !!on) { el.classList.toggle(c, !!on); el['_c' + c] = !!on; } };
+const typed = (s, t, a, c) => s.slice(0, Math.round(P(t, a, c, Ez.lin) * s.length));
+const rise = (el, t, a, z = null, dy = 24, d = 0.6) => { const i = P(t, a, a + d, Ez.expo), o = z == null ? 0 : P(t, z, z + MOTION.exit, Ez.in); S(el, { y: dy * (1 - i) - 16 * o, o: i * (1 - o) }); return i * (1 - o); };
+const wy = (el, pct) => { const v = `translate3d(0,${pct.toFixed(2)}%,0)`; if (el._tf !== v) { el.style.transform = v; el._tf = v; } };
+const hash01 = (a, c = 0) => { let h = (Math.imul(a + 1, 374761393) + Math.imul(c + 7, 668265263)) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+const pressAt = (t, c) => t > c - 0.06 && t < c + 0.1;   // a click "press" frame window
+const fmtN = (v, dec = 0) => dec ? v.toFixed(dec) : Math.round(v).toLocaleString('en-US');
+const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const mixC = (a, c, k) => { const A = hexRgb(a), C = hexRgb(c); return `rgb(${A.map((v, i) => Math.round(mix(v, C[i], clamp(k)))).join(',')})`; };   // blend two #rrggbb colours
+function splitWords(el) {   // wrap each word in a mask so it rises from its baseline. Call ONCE, at load.
+  const words = [], nodes = [...el.childNodes]; el.textContent = '';
+  const add = n => { const m = document.createElement('span'), w = document.createElement('span'); m.className = 'wm'; w.className = 'w'; w.appendChild(n); m.appendChild(w); el.appendChild(m); words.push(w); };
+  nodes.forEach(n => {
+    if (n.nodeType === 3) n.textContent.split(/(\s+)/).forEach(p => { if (/^\s+$/.test(p)) el.appendChild(document.createTextNode(' ')); else if (p) add(document.createTextNode(p)); });
+    else if (n.nodeName === 'BR') el.appendChild(document.createElement('br'));
+    else if (n.nodeType === 1 && n.classList.contains('ln')) { el.appendChild(n); words.push(...splitWords(n)); }   // a .ln line keeps its own line, its words split inside it
+    else add(n);   // an element (a <b>, a highlight span) moves as one word
+  });
+  return words;
+}
+function splitChars(el) {   // one span per letter (spaces kept) for letter-by-letter motion. Call ONCE, at load.
+  const s = el.textContent; el.textContent = '';
+  return [...s].map(c => { const sp = document.createElement('span'); sp.className = 'ch'; sp.textContent = c === ' ' ? '\u00a0' : c; el.appendChild(sp); return sp; });   // spaces become \u00a0: a plain space collapses inside an inline-block span
+}
+function wordsAt(ws, t, times, z = null, d = MOTION.enter) {   // word i rises at times[i]; all leave upward from z
+  ws.forEach((w, i) => {
+    const a = times[Math.min(i, times.length - 1)], k = P(t, a, a + d, Ez.expo);
+    const o = z == null ? 0 : P(t, z + i * 0.03, z + i * 0.03 + MOTION.exit, Ez.in);
+    wy(w, (1 - k) * 125 - o * 140);
+  });
+}
+const stag = (ws, a, s = MOTION.stagger) => ws.map((_, i) => a + i * s);
+function charsAt(cs, t, times, d = MOTION.enter, dy = 40) {   // letters rise and fade in at times[i] (use with splitChars)
+  cs.forEach((c, i) => { const a = times[Math.min(i, times.length - 1)], k = P(t, a, a + d, Ez.expo); S(c, { y: dy * (1 - k), o: P(t, a, a + d * 0.4, Ez.lin) }); });
+}
+function keys(K, t, e = Ez.q5) {   // keyframes [[t, v1, v2, …], …] → eased values at t; two keys at the same t make a hard cut
+  if (t <= K[0][0]) return K[0].slice(1);
+  for (let i = 0; i < K.length - 1; i++) { const A = K[i], B = K[i + 1]; if (t < B[0]) { const k = B[0] > A[0] ? e(clamp((t - A[0]) / (B[0] - A[0]))) : 1; return A.slice(1).map((v, j) => mix(v, B[j + 1], k)); } }
+  return K[K.length - 1].slice(1);
+}
+function pathAt(K, t) {   // a cursor path [[t, x, y], …] that travels in a gentle arc, like a hand
+  if (t <= K[0][0]) return [K[0][1], K[0][2]];
+  for (let i = 0; i < K.length - 1; i++) {
+    const A = K[i], B = K[i + 1];
+    if (t < B[0]) { const k = Ez.q5(clamp((t - A[0]) / (B[0] - A[0]))), dx = B[1] - A[1], dy = B[2] - A[2], bow = Math.sin(Math.PI * k) * 0.08; return [A[1] + dx * k - dy * bow, A[2] + dy * k + dx * bow]; }
+  }
+  const L = K[K.length - 1]; return [L[1], L[2]];
+}
+function cam(el, fx, fy, s, A) {   // UI camera: content laid out at A.aw×A.ah, seen through A.vw×A.vh; focus (fx, fy) at zoom s (1 = fit width)
+  const k = (A.vw / A.aw) * s;
+  const ax = (v, f, a) => (a * k <= v ? (v - a * k) / 2 : clamp(v / 2 - f * k, v - a * k, 0));   // content smaller than the view: centre it, never show an edge
+  const tx = ax(A.vw, fx, A.aw), ty = ax(A.vh, fy, A.ah);
+  const v = `translate3d(${tx.toFixed(2)}px,${ty.toFixed(2)}px,0) scale(${k.toFixed(5)})`;
+  if (el._tf !== v) { el.style.transform = v; el._tf = v; }
+}
+function rel(el, root) {   // an element's box in root's (unscaled) coordinates
+  let x = 0, y = 0, n = el;
+  while (n && n !== root) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+  return { x, y, w: el.offsetWidth, h: el.offsetHeight, cx: x + el.offsetWidth / 2, cy: y + el.offsetHeight / 2 };
+}
+/* product cards: one animator for every card (staged .xa reveals, [data-v] bars, [data-num] counters, rings, [data-type] typing) */
+function prepCard(c, stg = 0.05, spd = 0.75) {
+  c._xa = $$('.xa', c); c._stg = stg; c._spd = spd;
+  const at = e => { const j = c._xa.indexOf(e.closest('.xa')); return 0.08 + Math.max(0, j) * stg; };
+  c._bars = $$('[data-v]', c).map(e => ({ e, v: +e.dataset.v, a: at(e) }));
+  c._nums = $$('[data-num]', c).map(e => ({ e, to: +e.dataset.num, from: +(e.dataset.from || 0), dec: +(e.dataset.dec || 0), pre: e.dataset.pre || '', suf: e.dataset.suf || '', comma: !!e.dataset.comma, a: at(e) }));
+  c._rings = $$('circle[data-p]', c).map(e => { const L = 2 * Math.PI * +e.getAttribute('r'); e.style.strokeDasharray = L.toFixed(2); e.style.strokeDashoffset = L.toFixed(2); return { e, L, p: +e.dataset.p, a: at(e) }; });
+  c._types = $$('[data-type]', c).map(e => ({ e, full: e.dataset.type, a: e.dataset.a ? +e.dataset.a : at(e) + 0.06, d: +(e.dataset.d || 0.6) }));
+  c._car = $('.caret', c);
+}
+function animCard(c, u) {   // u = seconds since the card's moment
+  const k = c._spd;
+  c._xa.forEach((e, j) => { const a = 0.05 + j * c._stg; S(e, { y: 16 * (1 - P(u, a, a + 0.5 * k, Ez.expo)), o: P(u, a, a + 0.2 * k, Ez.lin) }); });
+  c._bars.forEach(o => st(o.e, 'transform', `scaleX(${(o.v * P(u, o.a, o.a + 0.65 * k, Ez.expo)).toFixed(4)})`));
+  c._nums.forEach(o => { const v = mix(o.from, o.to, P(u, o.a, o.a + 0.7 * k, Ez.out4)); txt(o.e, o.pre + (o.comma ? Math.round(v).toLocaleString('en-US') : v.toFixed(o.dec)) + o.suf); });
+  c._rings.forEach(o => st(o.e, 'strokeDashoffset', (o.L * (1 - o.p * P(u, o.a, o.a + 0.8 * k, Ez.out4))).toFixed(2)));
+  c._types.forEach(o => txt(o.e, typed(o.full, u, o.a, o.a + o.d)));
+  if (c._car) { const y = c._types[0], on = u > 0 && (u < (y ? y.a + y.d + 0.1 : 0) || (u * 2.2) % 1 < 0.6); st(c._car, 'opacity', on ? '1' : '0'); }
+}
+const clock = m => { m = Math.round(m) % 1440; const h = Math.floor(m / 60); return `${((h + 11) % 12) + 1}:${String(m % 60).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+
+/* ===================== scenes: one renderer per scene, gated by time ===================== */
+const M = {};
+const tW = splitWords($('#tT')), rW = splitWords($('#rT'));
+function rA(t) {
+  if (!show(M.sA, t < b(4.2))) return;
+  rise(M.tEb, t, b(0.4), b(3.2), 16); wordsAt(tW, t, stag(tW, b(0.7)), b(3.3));
+}
+const camAt = t => keys(M.CAM, t);
+function toStage(x, y, t) { const [fx, fy, s] = camAt(t), k = (A_VW / A_AW) * s; const tx = clamp(A_VW / 2 - fx * k, A_VW - A_AW * k, 0), ty = clamp(A_VH / 2 - fy * k, A_VH - A_AH * k, 0); return [240 + tx + x * k, 136 + 44 + ty + y * k]; }
+function spotOn(r, t, a, z) {   // a spotlight on an app-space rect for [a, z]
+  const k = P(t, a, a + 0.4, Ez.out) * (1 - P(t, z - 0.3, z, Ez.in));
+  if (k <= 0.001) return false;
+  const [x0, y0] = toStage(r.x - 8, r.y - 8, t), [x1, y1] = toStage(r.x + r.w + 8, r.y + r.h + 8, t);
+  S(M.spot, { x: x0, y: y0, o: k }); st(M.spot, 'width', (x1 - x0).toFixed(1) + 'px'); st(M.spot, 'height', (y1 - y0).toFixed(1) + 'px'); return true;
+}
+function rB(t) {
+  if (!show(M.sB, t >= b(3.6) && t < b(28.4))) return;
+  const kin = P(t, b(3.6), b(4.8), Ez.expo), ko = P(t, b(27.6), b(28.4), Ez.in);
+  S(M.win, { y: 60 * (1 - kin), o: P(t, b(3.6), b(4.1), Ez.lin) * (1 - ko) });
+  // HUD: same place for the whole video, the step and progress update
+  let si = 0; STEP_T.forEach((x, i) => { if (t >= x) si = i; });
+  S(M.hud, { y: 12 * (1 - P(t, b(4), b(4.6), Ez.expo)), o: P(t, b(4), b(4.4), Ez.lin) * (1 - ko) });
+  txt(M.hudN, `Step ${si + 1} of 3`); txt(M.hudT, STEP_N[si]);
+  S(M.hudT, { y: 14 * (1 - P(t, STEP_T[si], STEP_T[si] + 0.45, Ez.expo)), o: P(t, STEP_T[si], STEP_T[si] + 0.25, Ez.lin) });
+  M.segs.forEach((g, i) => st(g, 'transform', `scaleX(${P(t, [C_SET, KEY_T, C_SEND][i], [C_SET, KEY_T, C_SEND][i] + 0.4, Ez.expo).toFixed(4)})`));
+  const [fx, fy, s] = camAt(t); cam(M.app, fx, fy, s, { aw: A_AW, ah: A_AH, vw: A_VW, vh: A_VH });
+  // pages and tabs
+  const onSet = t >= C_SET + 0.12, onTeam = t >= C_TEAM + 0.12;
+  show(M.pHome, !onSet); show(M.pSet, onSet); cls(M.nHome, 'on', !onSet); cls(M.nSet, 'on', onSet); txt(M.urlTx, onSet ? 'app.acme.com/settings' + (onTeam ? '/team' : '') : 'app.acme.com/home');
+  if (onSet) S(M.pSet, { y: 16 * (1 - P(t, C_SET + 0.12, C_SET + 0.5, Ez.expo)), o: P(t, C_SET + 0.12, C_SET + 0.35, Ez.lin) });
+  cls(M.tbProf, 'on', !onTeam); cls(M.tbTeam, 'on', onTeam); show(M.pnProf, !onTeam); show(M.pnTeam, onTeam);
+  // step 2: focus the field, type, press Enter
+  const typing = t > C_FLD + 0.05 && t < C_DD;
+  cls(M.fld, 'on', typing); txt(M.fldTx, typed('jordan@northwind.co', t, TYPE_A, TYPE_Z)); show(M.fldPh, t < TYPE_A);
+  st(M.fldCar, 'opacity', typing && (t < TYPE_Z || (t * 2.2) % 1 < 0.6) ? '1' : '0');
+  const kk = P(t, KEY_T - 0.3, KEY_T, Ez.back) * (1 - P(t, KEY_T + 0.9, KEY_T + 1.2, Ez.in));
+  if (show(M.key, kk > 0.001)) { const [kx, ky] = toStage(M.fldR.x + M.fldR.w - 10, M.fldR.y + M.fldR.h + 26, t); S(M.key, { x: kx - 140, y: ky + (pressAt(t, KEY_T) ? 4 : 0), s: mix(0.8, 1, kk), o: kk }); }
+  // step 3: open the dropdown, move to Editor, pick it, send
+  const open = t > C_DD + 0.08 && t < C_ED + 0.12, km = P(t, C_DD + 0.08, C_DD + 0.35, Ez.expo) * (open ? 1 : 0);
+  cls(M.dd, 'on', open); S(M.menu, { y: 8 * (1 - km), o: km }); S(M.hl, { y: 42 * P(t, b(21.6), b(22.1), Ez.q5) });   // the highlight follows the cursor down to Editor, then the click
+  txt(M.ddTx, t >= C_ED + 0.12 ? 'Editor' : 'Viewer');
+  S(M.bSend, { s: pressAt(t, C_SEND) ? 0.94 : 1 });
+  show(M.newRow, t >= C_SEND + 0.2); if (t >= C_SEND + 0.2) S(M.newRow, { o: P(t, C_SEND + 0.2, C_SEND + 0.5, Ez.lin) });
+  S(M.toast, { y: 20 * (1 - P(t, C_SEND + 0.25, C_SEND + 0.7, Ez.expo)), o: P(t, C_SEND + 0.25, C_SEND + 0.45, Ez.lin) * (1 - P(t, b(27.3), b(27.7), Ez.lin)) });
+  // spotlight before each click: show where, then do it
+  show(M.spot, spotOn(M.setR, t, b(5.6), C_SET - 0.15) || spotOn(M.teamR, t, b(11.6), C_TEAM - 0.15) || spotOn(M.ddR, t, b(19.3), C_DD - 0.15));
+  // cursor (stage space) + press + ripple
+  const [cx, cy] = pathAt(M.CUR, t), [sx, sy] = toStage(cx, cy, t), clicks = [C_SET, C_TEAM, C_FLD, C_DD, C_ED, C_SEND];
+  S(M.cur, { x: sx - 4, y: sy - 3, s: clicks.some(c => pressAt(t, c)) ? 0.88 : 1, o: P(t, b(5), b(5.5), Ez.lin) * (1 - ko) });
+  let rk = -1, rc = 0; clicks.forEach(c => { if (t >= c && t < c + 0.5) { rk = (t - c) / 0.5; rc = c; } });
+  if (show(M.rip, rk >= 0)) { const [rx, ry] = toStage(...pathAt(M.CUR, rc), rc); S(M.rip, { x: rx, y: ry, s: mix(0.3, 1.4, Ez.out(rk)), o: 1 - rk }); }
+}
+function rC(t) {
+  if (!show(M.sC, t >= b(28.2))) return;
+  S(M.sC, { o: P(t, b(28.2), b(28.6), Ez.lin) });
+  wordsAt(rW, t, stag(rW, b(28.4)));
+  M.rcs.forEach((r, i) => { rise(r, t, RECAP[i] - 0.3, null, 18); const u = t - RECAP[i]; st(r._f, 'transform', `scale(${P(u, 0, 0.3, Ez.back).toFixed(4)})`); st(r._m, 'strokeDashoffset', (17 * (1 - P(u, 0.07, 0.32, Ez.out))).toFixed(2)); });
+  rise(M.rNext, t, b(31), null, 14);
+}
+function render(t) { rA(t); rB(t); rC(t); }
+function measure() {
+  $$('#stage [style*="display: none"]').forEach(e => { e.style.display = ''; e._display = undefined; });
+  const g = id => document.getElementById(id);
+  Object.assign(M, { sA: g('sA'), tEb: g('tEb'), sB: g('sB'), hud: g('hud'), hudN: g('hudN'), hudT: g('hudT'), segs: $$('#hud .seg b'), win: g('win'), app: g('app'), urlTx: g('urlTx'),
+    pHome: g('pHome'), pSet: g('pSet'), nHome: g('nHome'), nSet: g('nSet'), tbProf: g('tbProf'), tbTeam: g('tbTeam'), pnProf: g('pnProf'), pnTeam: g('pnTeam'),
+    fld: g('fld'), fldTx: g('fldTx'), fldPh: g('fldPh'), fldCar: g('fldCar'), key: g('key'), dd: g('dd'), ddTx: g('ddTx'), menu: g('menu'), hl: g('hl'), bSend: g('bSend'), newRow: g('newRow'), toast: g('toast'),
+    spot: g('spot'), cur: g('cur'), rip: g('rip'), sC: g('sC'), rcs: $$('#sC .rc'), rNext: g('rNext') });
+  M.rcs.forEach(r => { r._f = $('.ck b', r); r._m = $('.ck svg', r); });
+  // targets measured from the rebuilt UI (app px), in the layout they'll have when clicked (the Profile panel hidden)
+  M.pnProf.style.display = 'none'; M.pnProf._display = 'none';
+  const R = e => rel(e, M.app), C = e => { const r = R(e); return [r.cx, r.cy]; };
+  M.setR = R(M.nSet); M.teamR = R(M.tbTeam); M.fldR = R(M.fld); M.ddR = R(M.dd);
+  const items = $$('#menu div'), edR = R(items[1]), [sx, sy] = C(M.nSet), [tx, ty] = C(M.tbTeam), [fx, fy] = [M.fldR.x + 60, M.fldR.cy], [dx, dy] = C(M.dd), [bx, by] = C(M.bSend);
+  const ex = edR.x + 40, ey = edR.cy;
+  M.CUR = [[b(4), 900, 520], [b(6.6), 900, 520], [b(7.8), sx, sy], [b(9.5), sx, sy], [b(12.6), tx, ty], [b(13.6), tx, ty], [b(14.1), fx, fy], [b(19), fx, fy], [b(20.3), dx, dy], [b(21.6), dx, dy], [b(22.1), ex, ey], [b(23.6), ex, ey], [b(24.3), bx, by], [b(28), bx, by]];
+  const home = [A_AW / 2, A_AH / 2];
+  M.CAM = [[b(4), ...home, 1], [b(5.2), ...home, 1], [b(6), 330, 760, 1.35], [b(9.2), 330, 760, 1.35], [b(10.2), ...home, 1], [b(11.2), ...home, 1], [b(12), 880, 300, 1.15], [b(24.8), 880, 300, 1.15], [b(25.6), ...home, 1]];   // pull back after Send, so the result shows
+}
+
+/* ===================== score: Web Audio, scheduled on the film clock ===================== */
+const AU = (() => {
+  let ctx = null, OFF = false, comp, noiseBuf, irBuf, bus = null, a0 = 0, tFrom = 0, cursor = 0;
+  const EV = [], KICKS = [];
+  const one = (t, fn) => EV.push({ t, fn }), sus = (t, dur, fn) => EV.push({ t, dur, fn });   // sus: fn(w, B, offset, remaining)
+  const W = te => a0 + (te - tFrom);   // film time → audio-clock time
+  function setup() {
+    comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -18; comp.knee.value = 8; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.18;
+    const out = ctx.createGain(); out.gain.value = MIX.master; comp.connect(out).connect(ctx.destination);
+    let s = 1234567; const rnd = () => (s = (Math.imul(s, 1103515245) + 12345) >>> 0) / 2147483648 - 1;
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const nd = noiseBuf.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = rnd();
+    const len = Math.floor(ctx.sampleRate * 2.4); irBuf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = irBuf.getChannelData(c); for (let i = 0; i < len; i++) d[i] = rnd() * (1 - i / len) ** 3.2; }
+  }
+  function init() { if (ctx) return true; try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return false; } setup(); return true; }
+  function newBus() {
+    const B = { nodes: [], out: ctx.createGain(), dry: ctx.createGain(), send: ctx.createGain(), conv: ctx.createConvolver() };
+    B.out.connect(comp); B.dry.connect(B.out); B.conv.buffer = irBuf;
+    const wet = ctx.createGain(); wet.gain.value = MIX.reverb; B.send.connect(B.conv).connect(wet).connect(B.out);
+    if (DUCK.length) duckBus(B);   // under a voiceover, the whole score dips while someone speaks
+    return B;
+  }
+  function duckBus(B) { for (const [s, e] of DUCK) { const a = W(s), z = W(e); if (z < ctx.currentTime) continue; B.out.gain.setValueAtTime(1, Math.max(ctx.currentTime, a - 0.25)); B.out.gain.linearRampToValueAtTime(MIX.underVO, Math.max(ctx.currentTime + 0.01, a)); B.out.gain.setValueAtTime(MIX.underVO, Math.max(ctx.currentTime + 0.02, z)); B.out.gain.linearRampToValueAtTime(1, Math.max(ctx.currentTime + 0.03, z + 0.4)); } }
+  function start(from) {
+    if (!OFF) { if (!init()) return; if (ctx.state === 'suspended') ctx.resume(); }
+    stop(); a0 = ctx.currentTime + 0.05; tFrom = from; bus = newBus();   // 50 ms lead-in (subtract it when analysing)
+    for (const e of EV) if (e.dur && e.t < from && e.t + e.dur > from) e.fn(a0, bus, from - e.t, e.t + e.dur - from);
+    cursor = 0; while (cursor < EV.length && EV[cursor].t < from) cursor++;
+    pump(from);
+  }
+  function pump(t) {   // schedule ~0.3 s ahead; called every frame while playing
+    if (!bus) return;
+    while (cursor < EV.length && EV[cursor].t < t + 0.3) {
+      const e = EV[cursor++], w = W(e.t);
+      if (e.dur) e.fn(Math.max(w, ctx.currentTime), bus, 0, e.dur); else if (w > ctx.currentTime - 0.03) e.fn(w, bus);
+    }
+  }
+  function stop(soft) {
+    if (!bus) return; const B = bus; bus = null; const now = ctx.currentTime;
+    B.out.gain.cancelScheduledValues(now); B.out.gain.setValueAtTime(B.out.gain.value, now); B.out.gain.linearRampToValueAtTime(0.0001, now + (soft ? 2 : 0.06));
+    setTimeout(() => { B.nodes.forEach(n => { try { n.stop(); } catch (e) {} }); B.out.disconnect(); }, soft ? 2200 : 150);
+  }
+  /* ---- instruments: levels are a balanced starting mix ---- */
+  const go = (B, ...n) => B.nodes.push(...n);
+  const dest = (B, p) => { if (!p) return B.dry; const n = ctx.createStereoPanner(); n.pan.value = clamp(p, -1, 1); n.connect(B.dry); return n; };   // pan -1 (left) … 1 (right); 0 = centre, no node
+  const hum = (i, amt = 0.14) => 1 - amt / 2 + amt * hash01(i, 77);   // deterministic velocity variation: hat(w, B, 0.08 * hum(i)) sounds played, not pasted
+  const envG = (w, a, peak, d) => { const g = ctx.createGain(); g.gain.value = 0.0001; g.gain.setValueAtTime(0.0001, w); g.gain.exponentialRampToValueAtTime(Math.max(peak, 0.0002), w + a); g.gain.exponentialRampToValueAtTime(0.0001, w + a + d); return g; };   // starts silent: a new gain is 1 until its first event, which would let one sample click
+  function noise(w, B, { f = 2000, type = 'bandpass', q = 1, v = 0.1, a = 0.002, d = 0.1, send = 0, pan = 0 } = {}) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const fl = ctx.createBiquadFilter(); fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+    const g = envG(w, a, v, d); s.connect(fl).connect(g).connect(dest(B, pan));
+    if (send) { const sg = ctx.createGain(); sg.gain.value = send; g.connect(sg).connect(B.send); }
+    s.start(w, (w * 7.31) % Math.max(0.05, 1.95 - a - d)); s.stop(w + a + d + 0.05); go(B, s);
+  }
+  function tone(w, B, { f = 880, f2 = 0, type = 'sine', v = 0.08, a = 0.004, d = 0.3, send = 0, pan = 0 } = {}) {
+    const o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, w); if (f2) o.frequency.exponentialRampToValueAtTime(f2, w + a + d * 0.5);
+    const g = envG(w, a, v, d); o.connect(g).connect(dest(B, pan));
+    if (send) { const sg = ctx.createGain(); sg.gain.value = send; g.connect(sg).connect(B.send); }
+    o.start(w); o.stop(w + a + d + 0.05); go(B, o);
+  }
+  function kick(w, B, v = 0.34) {
+    v *= MIX.drums; const o = ctx.createOscillator(); o.frequency.setValueAtTime(165, w); o.frequency.exponentialRampToValueAtTime(48, w + 0.085);
+    const g = ctx.createGain(); g.gain.value = 0.0001; g.gain.setValueAtTime(0.0001, w); g.gain.exponentialRampToValueAtTime(v, w + 0.003); g.gain.exponentialRampToValueAtTime(v * 0.5, w + 0.11); g.gain.exponentialRampToValueAtTime(0.0001, w + 0.36);
+    o.connect(g).connect(B.dry); o.start(w); o.stop(w + 0.4); go(B, o);
+    noise(w, B, { type: 'highpass', f: 3200, v: 0.09 * MIX.drums, d: 0.012 });   // the click is what small speakers hear
+  }
+  const clap = (w, B, v = 0.2) => { v *= MIX.drums; [0, 0.009, 0.019].forEach(o => noise(w + o, B, { f: 1250, q: 0.9, v, d: 0.016 })); noise(w + 0.028, B, { f: 1150, q: 0.7, v: v * 0.75, d: 0.13, send: 0.45 }); };
+  const snare = (w, B, v = 0.15) => { v *= MIX.drums; noise(w, B, { f: 1800, q: 0.6, v, d: 0.15, send: 0.35 }); tone(w, B, { f: 196, f2: 150, v: v * 0.6, d: 0.08 }); };
+  const hat = (w, B, v = 0.09, pan = 0.18) => noise(w, B, { type: 'highpass', f: 7500, v: v * MIX.drums, d: 0.03, pan });
+  const shaker = (w, B, v = 0.05, pan = -0.3) => noise(w, B, { f: 6400, q: 1.1, v: v * MIX.drums, a: 0.01, d: 0.045, pan });
+  const crash = (w, B, v = 0.06, d = 1.8) => noise(w, B, { type: 'highpass', f: 5200, v, d, send: 0.45 });
+  const click = (w, B, v = 0.12) => { noise(w, B, { f: 3400, q: 2.2, v, d: 0.018 }); tone(w, B, { f: 2300, f2: 1500, v: v * 0.3, d: 0.03 }); };   // UI click
+  const tick = (w, B, i = 0, v = 0.05) => noise(w, B, { f: 3800 + hash01(i, 9) * 1600, q: 1.6, v, d: 0.012 });                          // typing / counter
+  const pop = (w, B, v = 0.08) => tone(w, B, { f: 520, f2: 900, v, d: 0.12, send: 0.25 });                                              // a badge or chip appears
+  function bass(w, B, f, d = 0.2, v = 0.09) {   // sine + octave triangle: the octave is what laptops can play
+    v *= MIX.bass; const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(); o1.frequency.value = f; o2.type = 'triangle'; o2.frequency.value = f * 2;
+    const g1 = ctx.createGain(), g2 = ctx.createGain(), g = ctx.createGain(); g1.gain.value = 0.75; g2.gain.value = 0.8; g.gain.value = 0.0001;
+    g.gain.setValueAtTime(0.0001, w); g.gain.exponentialRampToValueAtTime(v, w + 0.008); g.gain.setValueAtTime(v, w + d * 0.55); g.gain.exponentialRampToValueAtTime(0.0001, w + d);
+    o1.connect(g1).connect(g); o2.connect(g2).connect(g); g.connect(B.dry);
+    [o1, o2].forEach(o => { o.start(w); o.stop(w + d + 0.05); }); go(B, o1, o2);
+  }
+  function fm(w, B, f, ratio, idx0, idx1, idxT, v, d, send, pan = 0) {   // two-operator FM voice
+    const c = ctx.createOscillator(), m = ctx.createOscillator(), mg = ctx.createGain();
+    c.frequency.value = f; m.frequency.value = f * ratio;
+    mg.gain.setValueAtTime(f * idx0, w); mg.gain.exponentialRampToValueAtTime(f * idx1, w + idxT); m.connect(mg).connect(c.frequency);
+    const g = envG(w, 0.004, v, d); c.connect(g).connect(dest(B, pan));
+    const s = ctx.createGain(); s.gain.value = send; g.connect(s).connect(B.send);
+    [c, m].forEach(o => { o.start(w); o.stop(w + d + 0.05); }); go(B, c, m);
+  }
+  const ep = (w, B, f, v = 0.1, d = 1.6, pan = 0) => fm(w, B, f, 1, 1.3, 0.1, 0.5, v * MIX.keys, d, 0.35, pan);        // electric piano: chords, arps
+  const mallet = (w, B, f, v = 0.12, d = 0.6, pan = 0) => fm(w, B, f, 4, 1.8, 0.04, 0.09, v * MIX.keys, d, 0.3, pan);  // checks, pings, sparkles
+  const bell = (w, B, f, v = 0.06, d = 1.6, pan = 0) => fm(w, B, f, 3.5, 2.4, 0.2, 0.6, v * MIX.keys, d, 0.5, pan);    // glassy accents for premium/brand
+  function duck(g, w, end, depth = 0.45) { for (const k of KICKS) { const a = W(k); if (a < w + 0.01) continue; if (a > end) break; g.gain.setValueAtTime(1, a - 0.006); g.gain.linearRampToValueAtTime(depth, a + 0.01); g.gain.linearRampToValueAtTime(1, a + 0.3); } }
+  function pad(w, B, freqs, off, rem, lvl = 0.024, cut = 1800, pumpIt = true) {   // use with sus()
+    lvl *= MIX.pads; const end = w + rem, att = off > 0 ? 0.05 : 0.35;
+    const fl = ctx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = cut;
+    const g = ctx.createGain(), dg = ctx.createGain(); g.gain.value = 0.0001;
+    g.gain.setValueAtTime(0.0001, w); g.gain.linearRampToValueAtTime(1, w + att); g.gain.setValueAtTime(1, Math.max(w + att, end - 0.04)); g.gain.linearRampToValueAtTime(0.0001, end + 0.6);
+    fl.connect(g).connect(dg).connect(B.dry); const s = ctx.createGain(); s.gain.value = 0.5; dg.connect(s).connect(B.send);
+    if (pumpIt) duck(dg, w, end + 0.6);   // sidechain on its own gain node, never on the envelope
+    freqs.forEach(f => [-8, 8].forEach(dt => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = dt; const og = ctx.createGain(); og.gain.value = lvl; const pn = ctx.createStereoPanner(); pn.pan.value = dt < 0 ? -0.45 : 0.45; o.connect(og).connect(pn).connect(fl); o.start(w); o.stop(end + 0.7); go(B, o); }));
+  }
+  function swell(w, B, off, rem, v = 0.08, top = 6000) {   // reversed-cymbal riser into a downbeat; use with sus()
+    const k0 = off / (off + rem), end = w + rem, v0 = 0.0004;
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
+    const fl = ctx.createBiquadFilter(); fl.type = 'bandpass'; fl.Q.value = 0.8;
+    fl.frequency.setValueAtTime(400 * (top / 400) ** k0, w); fl.frequency.exponentialRampToValueAtTime(top, end);
+    const g = ctx.createGain(); g.gain.value = 0.0001; g.gain.setValueAtTime(v0 * (v / v0) ** k0, w); g.gain.exponentialRampToValueAtTime(v, end - 0.01); g.gain.linearRampToValueAtTime(0.0001, end + 0.004);
+    s.connect(fl).connect(g).connect(B.dry); s.start(w); s.stop(end + 0.05); go(B, s);
+  }
+  function whoosh(w, B, d = 0.5, v = 0.12) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const fl = ctx.createBiquadFilter(); fl.type = 'bandpass'; fl.Q.value = 0.7; fl.frequency.setValueAtTime(320, w); fl.frequency.exponentialRampToValueAtTime(3200, w + d);
+    const g = ctx.createGain(); g.gain.value = 0.0001; g.gain.setValueAtTime(0.0001, w); g.gain.exponentialRampToValueAtTime(v, w + d * 0.7); g.gain.exponentialRampToValueAtTime(0.0001, w + d);
+    s.connect(fl).connect(g).connect(B.dry); s.start(w, 0.3); s.stop(w + d + 0.05); go(B, s);
+  }
+  function impact(w, B, k = 1) { kick(w, B, 0.47 * k); tone(w, B, { f: 64, f2: 40, v: 0.18 * k * MIX.bass, d: 0.85 }); noise(w, B, { type: 'lowpass', f: 1700, v: 0.1 * k, d: 0.45, send: 0.6 }); crash(w, B, 0.085 * k, 1.8); }
+
+  /* ---- harmony + groove helpers (D major; set KEY to transpose the whole score) ---- */
+  const KEY = 0;
+  const hz = m => 440 * 2 ** ((m + KEY - 69) / 12);
+  const range = (a, c, s) => { const r = []; for (let x = a; x < c - 1e-6; x += s) r.push(+x.toFixed(4)); return r; };
+  const K = (t, v = 0.34) => { KICKS.push(t); one(t, (w, B) => kick(w, B, v)); };
+  const CH = { D: [54, 57, 62, 64], Em: [55, 59, 62, 66], 'F#m': [57, 61, 64, 66], G: [55, 59, 62, 66], A: [52, 57, 61, 64], Bm: [54, 57, 59, 62] };   // voicings (MIDI)
+  const ROOT = { D: 38, Em: 40, 'F#m': 42, G: 31, A: 33, Bm: 35 };
+  const ARP = { D: [62, 66, 69, 74], Em: [64, 67, 71, 76], 'F#m': [66, 69, 73, 78], G: [62, 67, 71, 74], A: [61, 64, 69, 73], Bm: [62, 66, 71, 74] };
+  const PENTA = [74, 76, 78, 81, 83, 86, 88, 90, 93];   // D major pentatonic, D5 → A6: one note per item, rising
+  function harmony(PROG) {   // PROG = [[t, 'D'], [t, 'A'], …, [tEnd, null]]: chord changes on the film clock
+    const chordAt = t => { let c = null; for (const [s, k] of PROG) if (t + 1e-6 >= s) c = k; return c; };
+    const segs = (a, c) => PROG.map(([s, k], i) => [s, PROG[i + 1] ? PROG[i + 1][0] : DUR + 4, k]).filter(([s, e, k]) => k && e > a && s < c).map(([s, e, k]) => [Math.max(s, a), Math.min(e, c), k]);
+    return {
+      chordAt, segs,
+      chords: (a, c, v = 0.1, oct = 0) => segs(a, c).forEach(([s, e, k]) => one(s, (w, B) => CH[k].forEach((m, i) => ep(w + i * 0.007, B, hz(m + oct), v, e - s + 0.35, (i - 1.5) * 0.22)))),
+      pads: (a, c, lvl = 0.024, cut = 1800, pumpIt = true) => segs(a, c).forEach(([s, e, k]) => sus(s, e - s, (w, B, off, rem) => pad(w, B, CH[k].map(m => hz(m)), off, rem, lvl, cut, pumpIt))),
+      arp: (a, c, step = BEAT / 2, v = 0.05, oct = 12, pat = [0, 1, 2, 3, 2, 1, 2, 3]) => range(a, c, step).forEach((x, i) => { const k = chordAt(x); if (k) one(x, (w, B) => ep(w, B, hz(ARP[k][pat[i % pat.length]] + oct), v * hum(i, 0.2), 0.4, i % 2 ? 0.32 : -0.32)); }),
+      groove: (a, c, o = {}) => {   // o: { kick, clap, hat, shaker, bass: false to drop a part; half: true for half-time; kv, cv, hv, bv levels }
+        const on = p => o[p] !== false;
+        range(a, c, BEAT).forEach(x => {
+          const n = Math.round(x / BEAT), k = chordAt(x);
+          if (on('kick') && (o.half ? n % 4 === 0 : true)) K(x, o.kv || 0.34);
+          if (on('clap') && (o.half ? n % 4 === 2 : n % 2 === 1)) one(x, (w, B) => clap(w, B, o.cv || 0.2));
+          if (on('hat')) one(x + BEAT / 2, (w, B) => hat(w, B, (o.hv || 0.09) * hum(n)));
+          if (on('bass') && k) one(x + BEAT / 2, (w, B) => bass(w, B, hz(ROOT[k]), BEAT * 0.42, o.bv || 0.09));
+        });
+        if (on('shaker')) range(a, c, BEAT / 4).forEach((x, i) => one(x, (w, B) => shaker(w, B, (i % 2 ? 0.05 : 0.03) * hum(i))));
+      },
+    };
+  }
+
+  /* ---- the score, written on the same beat grid as the picture ---- */
+  const H = harmony([[b(0), 'D'], [b(4), 'G'], [b(8), 'A'], [b(12), 'D'], [b(16), 'Bm'], [b(20), 'G'], [b(24), 'A'], [b(28), 'D'], [DUR + 9, null]]);
+  // a calm professional bed: keys, warm pads, a light half-time pulse; nothing competes with the instructions
+  H.chords(0, b(28), 0.08); H.pads(0, b(28), 0.02, 1400, false);
+  H.groove(b(4), b(27), { half: true, clap: false, hat: false, kv: 0.22, bv: 0.06 });
+  STEP_T.forEach((x, i) => one(x, (w, B) => mallet(w, B, hz(PENTA[i * 2]), 0.11)));                                   // a chime per step
+  [C_SET, C_TEAM, C_FLD, C_DD, C_ED, C_SEND].forEach(x => one(x, (w, B) => click(w, B)));
+  range(TYPE_A, TYPE_Z, 0.11).forEach((x, i) => one(x, (w, B) => tick(w, B, i, 0.045)));                              // typing
+  one(KEY_T, (w, B) => { click(w, B, 0.1); tone(w, B, { f: 180, f2: 120, v: 0.08, d: 0.08 }); });                       // the keycap press
+  one(C_SEND + 0.3, (w, B) => [81, 86].forEach((m, i) => mallet(w + i * 0.09, B, hz(m), 0.1)));                       // success
+  RECAP.forEach((x, i) => one(x, (w, B) => mallet(w, B, hz(PENTA[i * 2 + 2]), 0.11)));                                // recap checks climb
+  one(b(28.2), (w, B) => { CH.D.forEach((m, i) => ep(w + i * 0.007, B, hz(m), 0.1, 2.8)); crash(w, B, 0.03, 2); });
+  sus(b(28.2), b(3.8), (w, B, off, rem) => pad(w, B, CH.D.map(hz), off, rem, 0.018, 1400, false));
+
+  KICKS.sort((x, y) => x - y); EV.sort((x, y) => x.t - y.t);
+
+  /* ---- offline render: the whole score as a WAV Blob (analysis, MP4 muxing). Use in a fresh ?record page ---- */
+  function wavBlob(buf, mono) {
+    const ch = mono ? 1 : 2, n = buf.length, sr = buf.sampleRate, dv = new DataView(new ArrayBuffer(44 + n * ch * 2));
+    const ws = (o, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(o + i, s.charCodeAt(i)); };
+    ws(0, 'RIFF'); dv.setUint32(4, 36 + n * ch * 2, true); ws(8, 'WAVE'); ws(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, ch, true);
+    dv.setUint32(24, sr, true); dv.setUint32(28, sr * ch * 2, true); dv.setUint16(32, ch * 2, true); dv.setUint16(34, 16, true); ws(36, 'data'); dv.setUint32(40, n * ch * 2, true);
+    const L = buf.getChannelData(0), R = buf.numberOfChannels > 1 ? buf.getChannelData(1) : L, q = v => Math.max(-1, Math.min(1, v)) * 32767;
+    for (let i = 0, o = 44; i < n; i++) { if (mono) { dv.setInt16(o, q((L[i] + R[i]) / 2), true); o += 2; } else { dv.setInt16(o, q(L[i]), true); dv.setInt16(o + 2, q(R[i]), true); o += 4; } }
+    return new Blob([dv], { type: 'audio/wav' });
+  }
+  async function renderWav({ rate = 48000, mono = false } = {}) {
+    OFF = true; ctx = new OfflineAudioContext(2, Math.ceil(rate * (DUR + 2)), rate); setup(); start(0); pump(DUR + 2);
+    return wavBlob(await ctx.startRendering(), mono);
+  }
+  return { init, start, pump, stop, renderWav };
+})();
+
+/* optional voiceover: add an audio element with id="vo" and src="vo.mp3" to the body (inline.py embeds it as a data: URI) */
+const VOX = (() => {
+  const el = $('#vo'); if (!el || REC) return { start() {}, pump() {}, stop() {} };
+  return { start(t) { try { el.currentTime = t; } catch (e) {} el.play().catch(() => {}); }, pump(t) { if (!el.paused && Math.abs(el.currentTime - t) > 0.25) el.currentTime = t; }, stop() { el.pause(); } };
+})();
+
+/* ===================== player ===================== */
+const stage = $('#stage');
+stage.style.width = SW + 'px'; stage.style.height = SH + 'px';
+let cur = 0, playing = false, perf0 = 0, cur0 = 0, started = false, sound = !Q.has('mute'), lastMove = 0;
+const SND = { start: t => { if (sound) { AU.start(t); VOX.start(t); } }, pump: t => { if (sound) { AU.pump(t); VOX.pump(t); } }, stop: s => { AU.stop(s); VOX.stop(); } };
+const fit = () => { const s = Math.min(innerWidth / SW, innerHeight / SH); stage.style.transform = `translate(${((innerWidth - SW * s) / 2).toFixed(2)}px,${((innerHeight - SH * s) / 2).toFixed(2)}px) scale(${s})`; };
+addEventListener('resize', fit); fit();
+function play() { if (cur >= DUR - 0.05) cur = 0; playing = true; perf0 = performance.now(); cur0 = cur; SND.start(cur); }
+function pause() { playing = false; SND.stop(); }
+function seekTo(t) { cur = clamp(t, 0, DUR); render(cur); if (playing) { perf0 = performance.now(); cur0 = cur; SND.stop(); SND.start(cur); } }
+function frame(now) {
+  if (playing) { cur = cur0 + (now - perf0) / 1000; if (cur >= DUR) { cur = DUR; playing = false; SND.stop(true); if (Q.has('loop')) setTimeout(() => { cur = 0; render(0); play(); }, 600); } render(cur); if (playing) SND.pump(cur); }
+  if (!REC) { $('#barFill').style.width = (cur / DUR * 100).toFixed(3) + '%'; document.body.classList.toggle('idle', playing && now - lastMove > 2200); }
+  requestAnimationFrame(frame);
+}
+function bindUI() {
+  const begin = () => { if (started) return; started = true; document.body.classList.add('started'); $('#start').classList.add('gone'); AU.init(); cur = Q.has('t') ? cur : 0; render(cur); play(); };
+  $('#start').addEventListener('click', begin);
+  stage.addEventListener('click', () => { if (started) playing ? pause() : play(); });
+  $('#bar').addEventListener('pointerdown', e => { const r = $('#bar div').getBoundingClientRect(); seekTo(clamp((e.clientX - r.left) / r.width) * DUR); });
+  addEventListener('mousemove', () => { lastMove = performance.now(); });
+  addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (k === ' ' || k === 'k') { e.preventDefault(); if (!started) begin(); else playing ? pause() : play(); }
+    else if (k === 'arrowright') seekTo(cur + (e.shiftKey ? 5 : 1)); else if (k === 'arrowleft') seekTo(cur - (e.shiftKey ? 5 : 1));
+    else if (k === 'm') { sound = !sound; if (!sound) SND.stop(); else if (playing) SND.start(cur); }
+    else if (k === 'h') { const u = $('#ui'); u.style.visibility = u.style.visibility === 'hidden' ? '' : 'hidden'; }
+    else if (k === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && playing) pause(); });
+  if (Q.has('autoplay')) begin();
+}
+window.duration = DUR; window.stageSize = [SW, SH]; window.poster = POSTER;   // read by verify.py (stage size, thumbnail frame)
+window.seek = t => { cur = clamp(+t || 0, 0, DUR); render(cur); return cur; };
+window.renderWav = o => AU.renderWav(o);
+
+/* ===================== boot ===================== */
+const fontsReady = Promise.all([...document.fonts].map(f => f.load().catch(() => {}))).then(() => document.fonts.ready);   // every embedded face (display, UI, mono, italics) is ready before the first measure()
+window.videoReady = fontsReady.then(() => {
+  measure();
+  cur = Q.has('t') ? clamp(+Q.get('t') || 0, 0, DUR) : REC ? 0 : POSTER;
+  render(cur);
+  document.body.classList.add('ready'); if (REC) document.body.classList.add('rec'); else bindUI();
+  requestAnimationFrame(frame);
+  document.fonts.addEventListener('loadingdone', () => { measure(); render(cur); });
+  return true;
+});
+})();
+</script>
+</body>
+</html>

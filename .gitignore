@@ -1,0 +1,9 @@
+# verification and export by-products (the toolkit writes these next to a film)
+verify_out/
+frames/
+score.wav
+fonts.css
+*.src.html
+__pycache__/
+*.pyc
+.DS_Store
