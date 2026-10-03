@@ -11,7 +11,6 @@
 [![Works best with Claude Opus 5.5](https://img.shields.io/badge/Works_best_with-Claude_Opus_5.5-191919?logo=claude&logoColor=D97757)](https://www.anthropic.com/claude)
 [![11 skills](https://img.shields.io/badge/skills-11-2ea44f)](#the-11-skills)
 [![Output: HTML + MP4](https://img.shields.io/badge/output-HTML_%2B_MP4-0b7285)](#what-every-film-includes)
-[![GitHub stars](https://img.shields.io/github/stars/Neelshah1810/Claude-Video-Skills?style=social)](https://github.com/Neelshah1810/Claude-Video-Skills/stargazers)
 
 [How to use](#how-to-use) · [Gallery](#gallery) · [The 11 skills](#the-11-skills) · [Creative controls](#creative-controls) · [FAQ](#faq)
 
@@ -45,7 +44,7 @@ The skills work in the **Claude app** (claude.ai on the web and the desktop app)
 
 1. **Download a skill.** In this repo, open any skill folder (for example `event-promo/`), open its `SKILL.md`, then click **•••** › **Download**.
 2. **Open your skills.** In Claude, click **+** in the chat box › **Skills** › **Manage skills**.
-3. **Upload it.** Click **Add** › **Upload skill**, drop the `SKILL.md` in, and click **Upload**. The skill appears with *Author: Neel Shah, Version 1.0.0*, switched on. A `.zip` of the whole skill folder works too.
+3. **Upload it.** Click **Add** › **Upload skill**, drop the `SKILL.md` in, and click **Upload**. Check that the preview shows the skill's **name and description**, then upload. The skill appears in your list, switched on. A `.zip` of the whole skill folder works too.
 4. **Use it.** In any chat, type `/` and the skill's name, then what you want:
 
    ```text
@@ -84,126 +83,172 @@ Place the skill folder in your agent's skills directory.
 
 ## Gallery
 
-Every film below was made by Claude with these skills, one per skill, following that skill's own instructions. The loops are 6-second previews; click one, or the link under it, to watch the full film. All brands, people and numbers in them are fictional.
+Every film below was made by Claude with one of these skills, following that skill's own instructions. The loops are 6-second previews; click one, or the link under it, to watch the full film. All brands, people and numbers in them are fictional.
 
-<table>
-<tr>
-<td width="50%" valign="top">
+<div align="center">
 
-[![Low Tide: documentary title sequence](previews/low-tide-titles-preview.gif)](motion-film/examples/low-tide-titles.mp4)
+<a href="motion-film/SKILL.md"><img src="https://img.shields.io/badge/made_with-motion--film-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the motion-film skill"></a>
 
-**Low Tide**: documentary title sequence<br>
-`motion-film` · cinematic, type-led · 26 s<br>
-[▶ Watch the full film (MP4)](motion-film/examples/low-tide-titles.mp4) · [Open the HTML](motion-film/examples/low-tide-titles.html)
+### Low Tide
+A documentary title sequence · cinematic, type-led · 26 s
 
-</td>
-<td width="50%" valign="top">
+<a href="motion-film/examples/low-tide-titles.mp4"><img src="previews/low-tide-titles-preview.gif" width="720" alt="Low Tide: made with the motion-film skill"></a>
 
-[![Tally: product launch film](previews/tally-launch-preview.gif)](launch-film/examples/tally-launch.mp4)
+[▶ Watch the full film (MP4)](motion-film/examples/low-tide-titles.mp4) · [Open the HTML](motion-film/examples/low-tide-titles.html) · [Get the `motion-film` skill](motion-film/SKILL.md)
 
-**Tally**: invoices that chase themselves<br>
-`launch-film` · clean, concept-led · 30 s<br>
-[▶ Watch the full film (MP4)](launch-film/examples/tally-launch.mp4) · [Open the HTML](launch-film/examples/tally-launch.html)
+</div>
 
-</td>
-</tr>
-<tr>
-<td valign="top">
+<br>
 
-[![Harbor: product walkthrough](previews/harbor-walkthrough-preview.gif)](product-walkthrough/examples/harbor-walkthrough.mp4)
+<div align="center">
 
-**Harbor**: one ticket from arrival to resolved<br>
-`product-walkthrough` · calm product tour · 30 s<br>
-[▶ Watch the full film (MP4)](product-walkthrough/examples/harbor-walkthrough.mp4) · [Open the HTML](product-walkthrough/examples/harbor-walkthrough.html)
+<a href="launch-film/SKILL.md"><img src="https://img.shields.io/badge/made_with-launch--film-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the launch-film skill"></a>
 
-</td>
-<td valign="top">
+### Tally
+Invoices that chase themselves · clean, concept-led · 30 s
 
-[![How a heat pump works: explainer video](previews/heat-pump-explainer-preview.gif)](explainer-video/examples/heat-pump-explainer.mp4)
+<a href="launch-film/examples/tally-launch.mp4"><img src="previews/tally-launch-preview.gif" width="720" alt="Tally: made with the launch-film skill"></a>
 
-**How a heat pump heats your home**<br>
-`explainer-video` · warm diagram explainer · 32 s<br>
-[▶ Watch the full film (MP4)](explainer-video/examples/heat-pump-explainer.mp4) · [Open the HTML](explainer-video/examples/heat-pump-explainer.html)
+[▶ Watch the full film (MP4)](launch-film/examples/tally-launch.mp4) · [Open the HTML](launch-film/examples/tally-launch.html) · [Get the `launch-film` skill](launch-film/SKILL.md)
 
-</td>
-</tr>
-<tr>
-<td valign="top">
+</div>
 
-[![Northbeam: tutorial video](previews/northbeam-two-step-preview.gif)](tutorial-video/examples/northbeam-two-step.mp4)
+<br>
 
-**Turn on two-step sign-in** in Northbeam<br>
-`tutorial-video` · professional how-to · 30 s<br>
-[▶ Watch the full film (MP4)](tutorial-video/examples/northbeam-two-step.mp4) · [Open the HTML](tutorial-video/examples/northbeam-two-step.html)
+<div align="center">
 
-</td>
-<td valign="top">
+<a href="product-walkthrough/SKILL.md"><img src="https://img.shields.io/badge/made_with-product--walkthrough-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the product-walkthrough skill"></a>
 
-[![Quarry 3.2: feature update video](previews/quarry-3-2-whats-new-preview.gif)](feature-update/examples/quarry-3-2-whats-new.mp4)
+### Harbor
+One support ticket, from arrival to resolved · calm product tour · 30 s
 
-**Quarry 3.2**: what's new<br>
-`feature-update` · tech release notes · 26 s<br>
-[▶ Watch the full film (MP4)](feature-update/examples/quarry-3-2-whats-new.mp4) · [Open the HTML](feature-update/examples/quarry-3-2-whats-new.html)
+<a href="product-walkthrough/examples/harbor-walkthrough.mp4"><img src="previews/harbor-walkthrough-preview.gif" width="720" alt="Harbor: made with the product-walkthrough skill"></a>
 
-</td>
-</tr>
-<tr>
-<td valign="top">
+[▶ Watch the full film (MP4)](product-walkthrough/examples/harbor-walkthrough.mp4) · [Open the HTML](product-walkthrough/examples/harbor-walkthrough.html) · [Get the `product-walkthrough` skill](product-walkthrough/SKILL.md)
 
-[![Halden Bikes 2025: data story video](previews/halden-bikes-2025-preview.gif)](data-story/examples/halden-bikes-2025.mp4)
+</div>
 
-**Halden Bikes**: 2025 in rides<br>
-`data-story` · editorial year-in-review · 30 s<br>
-[▶ Watch the full film (MP4)](data-story/examples/halden-bikes-2025.mp4) · [Open the HTML](data-story/examples/halden-bikes-2025.html)
+<br>
 
-</td>
-<td valign="top">
+<div align="center">
 
-[![Morrow & Daughters: brand film](previews/morrow-manifesto-preview.gif)](brand-film/examples/morrow-manifesto.mp4)
+<a href="explainer-video/SKILL.md"><img src="https://img.shields.io/badge/made_with-explainer--video-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the explainer-video skill"></a>
 
-**Morrow & Daughters**: a manifesto<br>
-`brand-film` · premium, restrained · 26 s<br>
-[▶ Watch the full film (MP4)](brand-film/examples/morrow-manifesto.mp4) · [Open the HTML](brand-film/examples/morrow-manifesto.html)
+### How a heat pump heats your home
+Moving heat, not making it · warm diagram explainer · 32 s
 
-</td>
-</tr>
-<tr>
-<td valign="top">
+<a href="explainer-video/examples/heat-pump-explainer.mp4"><img src="previews/heat-pump-explainer-preview.gif" width="720" alt="How a heat pump heats your home: made with the explainer-video skill"></a>
 
-[![Fieldwork '27: event promo video](previews/fieldwork-27-promo-preview.gif)](event-promo/examples/fieldwork-27-promo.mp4)
+[▶ Watch the full film (MP4)](explainer-video/examples/heat-pump-explainer.mp4) · [Open the HTML](explainer-video/examples/heat-pump-explainer.html) · [Get the `explainer-video` skill](explainer-video/SKILL.md)
 
-**Fieldwork '27**: a design conference in Lisbon<br>
-`event-promo` · joyful, kinetic · 24 s<br>
-[▶ Watch the full film (MP4)](event-promo/examples/fieldwork-27-promo.mp4) · [Open the HTML](event-promo/examples/fieldwork-27-promo.html)
+</div>
 
-</td>
-<td valign="top">
+<br>
 
-[![Rosa's Bakery × Crumb: testimonial video](previews/crumb-rosas-bakery-preview.gif)](testimonial-video/examples/crumb-rosas-bakery.mp4)
+<div align="center">
 
-**Rosa's Bakery × Crumb**: a customer story<br>
-`testimonial-video` · warm, quote-led · 26 s<br>
-[▶ Watch the full film (MP4)](testimonial-video/examples/crumb-rosas-bakery.mp4) · [Open the HTML](testimonial-video/examples/crumb-rosas-bakery.html)
+<a href="tutorial-video/SKILL.md"><img src="https://img.shields.io/badge/made_with-tutorial--video-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the tutorial-video skill"></a>
 
-</td>
-</tr>
-<tr>
-<td valign="top">
+### Northbeam
+Turn on two-step sign-in in 4 steps · professional how-to · 30 s
 
-[![Fernly: vertical social ad](previews/fernly-reel-preview.gif)](social-ad/examples/fernly-reel.mp4)
+<a href="tutorial-video/examples/northbeam-two-step.mp4"><img src="previews/northbeam-two-step-preview.gif" width="720" alt="Northbeam: made with the tutorial-video skill"></a>
 
-</td>
-<td valign="top">
+[▶ Watch the full film (MP4)](tutorial-video/examples/northbeam-two-step.mp4) · [Open the HTML](tutorial-video/examples/northbeam-two-step.html) · [Get the `tutorial-video` skill](tutorial-video/SKILL.md)
 
-**Fernly**: "Your plant isn't dramatic."<br>
-`social-ad` · bold vertical Reel / TikTok / Short (9:16) · 15 s<br>
-[▶ Watch the full film (MP4)](social-ad/examples/fernly-reel.mp4) · [Open the HTML](social-ad/examples/fernly-reel.html)
+</div>
+
+<br>
+
+<div align="center">
+
+<a href="feature-update/SKILL.md"><img src="https://img.shields.io/badge/made_with-feature--update-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the feature-update skill"></a>
+
+### Quarry 3.2
+What’s new, in four equal slots · tech release notes · 26 s
+
+<a href="feature-update/examples/quarry-3-2-whats-new.mp4"><img src="previews/quarry-3-2-whats-new-preview.gif" width="720" alt="Quarry 3.2: made with the feature-update skill"></a>
+
+[▶ Watch the full film (MP4)](feature-update/examples/quarry-3-2-whats-new.mp4) · [Open the HTML](feature-update/examples/quarry-3-2-whats-new.html) · [Get the `feature-update` skill](feature-update/SKILL.md)
+
+</div>
+
+<br>
+
+<div align="center">
+
+<a href="data-story/SKILL.md"><img src="https://img.shields.io/badge/made_with-data--story-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the data-story skill"></a>
+
+### Halden Bikes
+2025 in rides · editorial year-in-review · 30 s
+
+<a href="data-story/examples/halden-bikes-2025.mp4"><img src="previews/halden-bikes-2025-preview.gif" width="720" alt="Halden Bikes: made with the data-story skill"></a>
+
+[▶ Watch the full film (MP4)](data-story/examples/halden-bikes-2025.mp4) · [Open the HTML](data-story/examples/halden-bikes-2025.html) · [Get the `data-story` skill](data-story/SKILL.md)
+
+</div>
+
+<br>
+
+<div align="center">
+
+<a href="brand-film/SKILL.md"><img src="https://img.shields.io/badge/made_with-brand--film-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the brand-film skill"></a>
+
+### Morrow & Daughters
+We make chairs for the next owner · premium, restrained · 26 s
+
+<a href="brand-film/examples/morrow-manifesto.mp4"><img src="previews/morrow-manifesto-preview.gif" width="720" alt="Morrow & Daughters: made with the brand-film skill"></a>
+
+[▶ Watch the full film (MP4)](brand-film/examples/morrow-manifesto.mp4) · [Open the HTML](brand-film/examples/morrow-manifesto.html) · [Get the `brand-film` skill](brand-film/SKILL.md)
+
+</div>
+
+<br>
+
+<div align="center">
+
+<a href="event-promo/SKILL.md"><img src="https://img.shields.io/badge/made_with-event--promo-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the event-promo skill"></a>
+
+### Fieldwork ’27
+A design conference in Lisbon · joyful, kinetic · 24 s
+
+<a href="event-promo/examples/fieldwork-27-promo.mp4"><img src="previews/fieldwork-27-promo-preview.gif" width="720" alt="Fieldwork ’27: made with the event-promo skill"></a>
+
+[▶ Watch the full film (MP4)](event-promo/examples/fieldwork-27-promo.mp4) · [Open the HTML](event-promo/examples/fieldwork-27-promo.html) · [Get the `event-promo` skill](event-promo/SKILL.md)
+
+</div>
+
+<br>
+
+<div align="center">
+
+<a href="testimonial-video/SKILL.md"><img src="https://img.shields.io/badge/made_with-testimonial--video-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the testimonial-video skill"></a>
+
+### Rosa’s Bakery × Crumb
+A customer story · warm, quote-led · 26 s
+
+<a href="testimonial-video/examples/crumb-rosas-bakery.mp4"><img src="previews/crumb-rosas-bakery-preview.gif" width="720" alt="Rosa’s Bakery × Crumb: made with the testimonial-video skill"></a>
+
+[▶ Watch the full film (MP4)](testimonial-video/examples/crumb-rosas-bakery.mp4) · [Open the HTML](testimonial-video/examples/crumb-rosas-bakery.html) · [Get the `testimonial-video` skill](testimonial-video/SKILL.md)
+
+</div>
+
+<br>
+
+<div align="center">
+
+<a href="social-ad/SKILL.md"><img src="https://img.shields.io/badge/made_with-social--ad-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Made with the social-ad skill"></a>
+
+### Fernly
+“Your plant isn’t dramatic.” · bold vertical Reel / TikTok / Short (9:16) · 15 s
+
+<a href="social-ad/examples/fernly-reel.mp4"><img src="previews/fernly-reel-preview.gif" width="340" alt="Fernly: made with the social-ad skill"></a>
+
+[▶ Watch the full film (MP4)](social-ad/examples/fernly-reel.mp4) · [Open the HTML](social-ad/examples/fernly-reel.html) · [Get the `social-ad` skill](social-ad/SKILL.md)
+
+</div>
 
 The HTML versions play offline in Chrome or Edge, with a player. Download one and open it locally, with sound on.
-
-</td>
-</tr>
-</table>
 
 ## The 11 skills
 
