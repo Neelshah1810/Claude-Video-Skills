@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src=".github/logo.svg" width="150" alt="Claude Video Skills logo: a friendly pixel-art clapperboard character, waving">
+
 # Claude Video Skills
 
 ### Make professional motion-graphics videos with Claude: launch films, explainers, product walkthroughs, social ads, data stories and more.
@@ -11,6 +13,7 @@
 [![Works best with Claude Opus 5.5](https://img.shields.io/badge/Works_best_with-Claude_Opus_5.5-191919?logo=claude&logoColor=D97757)](https://www.anthropic.com/claude)
 [![11 skills](https://img.shields.io/badge/skills-11-2ea44f)](#the-11-skills)
 [![Output: HTML + MP4](https://img.shields.io/badge/output-HTML_%2B_MP4-0b7285)](#what-every-film-includes)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 [How to use](#how-to-use) · [Gallery](#gallery) · [The 11 skills](#the-11-skills) · [Creative controls](#creative-controls) · [FAQ](#faq)
 
@@ -360,7 +363,7 @@ launch-film/
 
 `templates/` and `scripts/` hold the same files as the appendix, as plain files for reading and editing. When they are present, Claude copies from them; when only `SKILL.md` is installed, it unpacks the embedded copies. The repo's `previews/` folder holds the short GIF loops used in this README, and `how-to-use/` holds the setup video.
 
-**Maintainers:** after editing anything in `templates/` or `scripts/`, run `python sync_embedded.py` from the repo root, so every `SKILL.md` carries the same files. `python sync_embedded.py --check` reports any drift.
+**Maintainers:** if you edit anything in `templates/` or `scripts/`, update the matching copy in that skill's `SKILL.md` appendix too, so the single-file install stays identical.
 
 ## FAQ
 
