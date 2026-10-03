@@ -8,17 +8,16 @@
   <!-- the slate body with its striped clapper band -->
   <path fill="#D97757" d="M4 9h18v11h-1v1H5v-1H4z"/>
   <path fill="#1A1918" d="M4 9h2.2l-1.4 2.2H4zM8.6 9h2.3l-1.5 2.2H7.1zM13.4 9h2.3l-1.5 2.2h-2.3zM18.2 9h2.3L19 11.2h-2.3z"/>
-  <!-- arms: the left one raised ("action!"), the right one relaxed -->
-  <path fill="#D97757" d="M2.6 14H4v1.6H2.6zM1.4 11.4H3v3.2H1.4zM1 10.2h2.4v1.6H1z"/>
+  <!-- arms: one raised ("action!"), one relaxed -->
+  <path fill="#D97757" d="M2.6 14H4v1.6H2.6zM1.6 10.6H3.2v4.2H1.6z"/>
   <path fill="#D97757" d="M22 15h1.6v1.6H22zM23.2 15.8h1.6v2.4h-1.6z"/>
-  <!-- eyes, each with two glints -->
-  <path fill="#1A1918" d="M8 12.4h3.2v4.2H8zM14.8 12.4H18v4.2h-3.2z"/>
-  <path fill="#FFFFFF" d="M8.4 12.8h1.2v1.2H8.4zM15.2 12.8h1.2v1.2h-1.2z"/>
-  <path fill="#FFFFFF" opacity=".55" d="M10.2 15.4h.6v.6h-.6zM17 15.4h.6v.6H17z"/>
-  <!-- cheeks -->
-  <path fill="#F0A88C" d="M5.6 16.8h1.8v1H5.6zM18.6 16.8h1.8v1h-1.8z"/>
-  <!-- a small smile -->
-  <path fill="#1A1918" d="M11.2 17.6h.8v.8h-.8zM12 18.4h2v.8h-2zM14 17.6h.8v.8H14z"/>
+  <!-- a confident wink: one open eye, one closed -->
+  <path fill="#1A1918" d="M8.6 12.8h2.4v3.2H8.6z"/>
+  <path fill="#FFFFFF" d="M9 13.2h.8v.8H9z"/>
+  <path fill="#1A1918" d="M14.8 14.6h2.8v.8h-2.8zM14.8 13.8h.8v.8h-.8z"/>
+  <!-- a wide, open smile (rounded, no corners) -->
+  <path fill="#1A1918" d="M11 17h4v.8h-4zM11.4 17.8h3.2v.8h-3.2zM12.2 18.6h1.6v.6h-1.6z"/>
+  <path fill="#E8957A" d="M12.2 18h1.6v.6h-1.6z"/>
   <!-- stubby legs -->
   <path fill="#D97757" d="M7 21h2.2v3H7zM16.8 21H19v3h-2.2z"/>
 </svg>

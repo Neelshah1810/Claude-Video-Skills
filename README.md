@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/logo.svg" width="150" alt="Claude Video Skills logo: a friendly pixel-art clapperboard character, waving">
+<img src=".github/logo.svg" width="150" alt="Claude Video Skills logo: a pixel-art clapperboard character winking and calling Action!">
 
 # Claude Video Skills
 
