@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://neelshah1810.github.io/Claude-Video-Skills/sitemap.xml

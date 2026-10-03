@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Claude Video Skills: make motion-graphics videos with Claude (HTML + MP4)</title>
+<meta name="description" content="Claude Video Skills: 11 free, open-source Claude skills that make professional motion-graphics videos — launch films, explainer videos, product walkthroughs, social ads, data stories and more — as an HTML film and an MP4. Works in Claude and Claude Code.">
+<meta name="keywords" content="Claude video skills, Claude skills, Claude Code skills, AI video generator, motion graphics, explainer video, launch video, product walkthrough video, social media ad, kinetic typography, HTML to MP4, Anthropic Claude">
+<meta name="author" content="Neel Shah">
+<link rel="canonical" href="https://neelshah1810.github.io/Claude-Video-Skills/">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<meta name="theme-color" content="#141413">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Claude Video Skills">
+<meta property="og:title" content="Claude Video Skills: make motion-graphics videos with Claude">
+<meta property="og:description" content="11 free, open-source Claude skills for launch films, explainers, product walkthroughs, social ads and data stories. One prompt in, an HTML film and an MP4 out.">
+<meta property="og:url" content="https://neelshah1810.github.io/Claude-Video-Skills/">
+<meta property="og:image" content="https://neelshah1810.github.io/Claude-Video-Skills/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Claude Video Skills: make motion-graphics videos with Claude">
+<meta name="twitter:description" content="11 free, open-source Claude skills. One prompt in, an HTML film and an MP4 out.">
+<meta name="twitter:image" content="https://neelshah1810.github.io/Claude-Video-Skills/social-preview.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "Claude Video Skills",
+  "description": "11 open-source Claude skills that make professional motion-graphics videos (launch films, explainers, product walkthroughs, social ads, data stories) as an HTML film and an MP4.",
+  "url": "https://neelshah1810.github.io/Claude-Video-Skills/",
+  "codeRepository": "https://github.com/Neelshah1810/Claude-Video-Skills",
+  "programmingLanguage": ["HTML", "JavaScript", "Python"],
+  "license": "https://opensource.org/licenses/MIT",
+  "author": { "@type": "Person", "name": "Neel Shah", "url": "https://github.com/Neelshah1810" },
+  "keywords": "Claude video skills, Claude skills, Claude Code, motion graphics, explainer video, launch video, HTML to MP4"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "What are Claude Video Skills?", "acceptedAnswer": { "@type": "Answer", "text": "A free, open-source set of 11 Claude skills that turn Claude into a video studio. Describe a video in plain words and Claude makes a finished motion-graphics film as an HTML file and an MP4." } },
+    { "@type": "Question", "name": "How do I add a video skill to Claude?", "acceptedAnswer": { "@type": "Answer", "text": "Download a skill's SKILL.md from GitHub. In Claude, click + in the chat box, then Skills, then Manage skills. Click Add, then Upload skill, drop the SKILL.md in and click Upload. Then type / and the skill's name in any chat." } },
+    { "@type": "Question", "name": "Do Claude Video Skills work in Claude Code?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Copy a skill folder into ~/.claude/skills/ and run it with /skill-name, or just ask in plain words." } },
+    { "@type": "Question", "name": "Do I need an API key or a video editor?", "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs with Claude's code execution, Chrome and FFmpeg, and the music is synthesized in the film itself." } },
+    { "@type": "Question", "name": "Which Claude model works best?", "acceptedAnswer": { "@type": "Answer", "text": "Any recent model works, but the skills work best with Claude Opus 5.5." } }
+  ]
+}
+</script>
+<style>
+:root{--bg:#141413;--panel:#1d1c1a;--line:#2e2c28;--fg:#f3f0e9;--muted:#a9a397;--accent:#d97757;--accent-2:#e9906b;--ink:#1a1918}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-2)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+nav .brand{display:flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none;font-weight:700}
+nav .brand img{width:30px;height:30px}
+nav .links a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:15px}
+nav .links a:hover{color:var(--fg)}
+.hero{text-align:center;padding:56px 0 40px}
+.hero img.logo{width:132px;height:132px}
+h1{font-size:clamp(40px,7vw,72px);line-height:1.05;letter-spacing:-.025em;margin-top:18px}
+.lede{font-size:clamp(18px,2.4vw,22px);color:var(--muted);max-width:760px;margin:20px auto 0}
+.lede b{color:var(--fg)}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:12px;font-weight:650;text-decoration:none;font-size:16px}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{background:var(--panel);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line)}
+.btn svg{width:18px;height:18px}
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.chip{font-size:13px;color:var(--muted);padding:6px 12px;border-radius:999px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+.chip b{color:var(--accent-2)}
+section{padding:56px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;line-height:1.15}
+.sub{color:var(--muted);margin-top:10px;max-width:760px}
+.howto{display:grid;grid-template-columns:1.25fr 1fr;gap:34px;align-items:start;margin-top:30px}
+.howto>*,.grid>*{min-width:0}
+.howto img{display:block;width:100%;height:auto;border-radius:14px;box-shadow:0 0 0 1px var(--line)}
+ol.steps{list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;position:relative;padding-left:44px;margin-bottom:18px}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;font-weight:700;display:grid;place-items:center;font-size:15px}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px}
+code{background:var(--panel);padding:2px 6px;border-radius:6px}
+pre{background:#0f0f0e;box-shadow:inset 0 0 0 1px var(--line);border-radius:12px;padding:16px 18px;overflow:auto;margin-top:14px;line-height:1.55}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:30px}
+.film{background:var(--panel);border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.film a.thumb{display:block;background:#0f0f0e}
+.film img{display:block;width:100%;height:auto}
+.film .meta{padding:16px 18px 18px}
+.film .skill{display:inline-block;font:700 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.04em;color:#fff;background:var(--accent);padding:6px 9px;border-radius:7px}
+.film h3{font-size:20px;margin-top:10px;letter-spacing:-.01em}
+.film p{color:var(--muted);font-size:15px;margin-top:2px}
+.film .acts{margin-top:10px;font-size:15px}
+.film .acts a{margin-right:14px;text-decoration:none}
+.film.vertical{display:grid;grid-template-columns:220px 1fr;align-items:center;grid-column:1 / -1}
+.film.vertical a.thumb{height:100%}
+table{width:100%;border-collapse:collapse;margin-top:26px;font-size:15px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+td a{font-family:ui-monospace,Menlo,monospace;text-decoration:none}
+details{background:var(--panel);border-radius:12px;box-shadow:inset 0 0 0 1px var(--line);padding:16px 18px;margin-top:12px}
+summary{cursor:pointer;font-weight:650}
+details p{color:var(--muted);margin-top:10px}
+footer{border-top:1px solid var(--line);padding:46px 0 60px;text-align:center}
+footer .star{font-size:22px;font-weight:700}
+footer small{display:block;color:var(--muted);margin-top:22px;font-size:13px}
+@media (max-width:820px){.howto,.grid{grid-template-columns:1fr}.film.vertical{grid-template-columns:1fr}nav .links{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#top"><img src="logo.svg" alt="">Claude Video Skills</a>
+    <div class="links"><a href="#how-to-use">How to use</a><a href="#gallery">Gallery</a><a href="#skills">Skills</a><a href="#faq">FAQ</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills">GitHub</a></div>
+  </nav>
+
+  <header class="hero" id="top">
+    <img class="logo" src="logo.svg" alt="Claude Video Skills logo: a pixel-art clapperboard character winking and calling Action!">
+    <h1>Claude Video Skills</h1>
+    <p class="lede">Make professional <b>motion-graphics videos with Claude</b>: launch films, explainers, product walkthroughs, social ads, data stories and more. <b>One prompt in, an HTML film and an MP4 out.</b></p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/Neelshah1810/Claude-Video-Skills"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Get the skills on GitHub</a>
+      <a class="btn ghost" href="#how-to-use">How to use them</a>
+    </div>
+    <div class="chips"><span class="chip"><b>11</b> skills</span><span class="chip">Claude &amp; Claude Code</span><span class="chip">Works best with <b>Claude Opus 5.5</b></span><span class="chip">Free &amp; open source · MIT</span></div>
+  </header>
+
+  <section id="how-to-use">
+    <h2>Add a video skill to Claude in under a minute</h2>
+    <p class="sub">Each skill is a single <code>SKILL.md</code> file. Works in the Claude app (web and desktop) and in Claude Code.</p>
+    <div class="howto">
+      <a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/how-to-use/claude-app.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/how-to-use/claude-app.gif" alt="How to add a video skill to the Claude app, step by step" width="800" height="450"></a>
+      <div>
+        <ol class="steps">
+          <li><b>Download a skill.</b> On GitHub, open any skill folder, open its <code>SKILL.md</code>, then <b>•••</b> › <b>Download</b>.</li>
+          <li><b>Open your skills.</b> In Claude: <b>+</b> › <b>Skills</b> › <b>Manage skills</b>.</li>
+          <li><b>Upload it.</b> <b>Add</b> › <b>Upload skill</b>, drop the <code>SKILL.md</code>, check its name and description, click <b>Upload</b>.</li>
+          <li><b>Ask for a video.</b> Type <code>/</code> and the skill's name, then what you want.</li>
+        </ol>
+        <pre>/event-promo 20-second promo for our Design Systems Meetup:
+Thu 12 Nov, 7 pm, Lisbon. Free tickets at meetup.example
+--motion:high</pre>
+      </div>
+    </div>
+    <h3 style="margin-top:40px;font-size:22px">In Claude Code</h3>
+    <pre>git clone https://github.com/Neelshah1810/Claude-Video-Skills
+mkdir -p ~/.claude/skills
+cp -R Claude-Video-Skills/event-promo ~/.claude/skills/
+# then, in Claude Code:  /event-promo make a 20-second promo for …</pre>
+  </section>
+
+  <section id="gallery">
+    <h2>Gallery: 11 films, one per skill</h2>
+    <p class="sub">Every film below was made by Claude with these skills. Click a preview to watch the full film. All brands, people and numbers in them are fictional.</p>
+    <div class="grid">
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/motion-film/examples/low-tide-titles.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/low-tide-titles-preview.gif" alt="Low Tide: a video made with the motion-film Claude skill"></a>
+        <div class="meta"><span class="skill">made with motion-film</span><h3>Low Tide</h3><p>A documentary title sequence · 26 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/motion-film/examples/low-tide-titles.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/motion-film/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/launch-film/examples/tally-launch.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/tally-launch-preview.gif" alt="Tally: a video made with the launch-film Claude skill"></a>
+        <div class="meta"><span class="skill">made with launch-film</span><h3>Tally</h3><p>Invoices that chase themselves · 30 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/launch-film/examples/tally-launch.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/launch-film/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/product-walkthrough/examples/harbor-walkthrough.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/harbor-walkthrough-preview.gif" alt="Harbor: a video made with the product-walkthrough Claude skill"></a>
+        <div class="meta"><span class="skill">made with product-walkthrough</span><h3>Harbor</h3><p>One support ticket, from arrival to resolved · 30 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/product-walkthrough/examples/harbor-walkthrough.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/product-walkthrough/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/explainer-video/examples/heat-pump-explainer.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/heat-pump-explainer-preview.gif" alt="How a heat pump heats your home: a video made with the explainer-video Claude skill"></a>
+        <div class="meta"><span class="skill">made with explainer-video</span><h3>How a heat pump heats your home</h3><p>A warm diagram explainer · 32 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/explainer-video/examples/heat-pump-explainer.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/explainer-video/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/tutorial-video/examples/northbeam-two-step.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/northbeam-two-step-preview.gif" alt="Northbeam: a video made with the tutorial-video Claude skill"></a>
+        <div class="meta"><span class="skill">made with tutorial-video</span><h3>Northbeam</h3><p>Turn on two-step sign-in in 4 steps · 30 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/tutorial-video/examples/northbeam-two-step.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/tutorial-video/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/feature-update/examples/quarry-3-2-whats-new.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/quarry-3-2-whats-new-preview.gif" alt="Quarry 3.2: a video made with the feature-update Claude skill"></a>
+        <div class="meta"><span class="skill">made with feature-update</span><h3>Quarry 3.2</h3><p>What’s new, in four equal slots · 26 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/feature-update/examples/quarry-3-2-whats-new.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/feature-update/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/data-story/examples/halden-bikes-2025.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/halden-bikes-2025-preview.gif" alt="Halden Bikes: a video made with the data-story Claude skill"></a>
+        <div class="meta"><span class="skill">made with data-story</span><h3>Halden Bikes</h3><p>2025 in rides · 30 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/data-story/examples/halden-bikes-2025.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/data-story/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/brand-film/examples/morrow-manifesto.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/morrow-manifesto-preview.gif" alt="Morrow &amp; Daughters: a video made with the brand-film Claude skill"></a>
+        <div class="meta"><span class="skill">made with brand-film</span><h3>Morrow &amp; Daughters</h3><p>We make chairs for the next owner · 26 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/brand-film/examples/morrow-manifesto.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/brand-film/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/event-promo/examples/fieldwork-27-promo.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/fieldwork-27-promo-preview.gif" alt="Fieldwork ’27: a video made with the event-promo Claude skill"></a>
+        <div class="meta"><span class="skill">made with event-promo</span><h3>Fieldwork ’27</h3><p>A design conference in Lisbon · 24 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/event-promo/examples/fieldwork-27-promo.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/event-promo/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/testimonial-video/examples/crumb-rosas-bakery.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/crumb-rosas-bakery-preview.gif" alt="Rosa’s Bakery × Crumb: a video made with the testimonial-video Claude skill"></a>
+        <div class="meta"><span class="skill">made with testimonial-video</span><h3>Rosa’s Bakery × Crumb</h3><p>A customer story · 26 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/testimonial-video/examples/crumb-rosas-bakery.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/testimonial-video/SKILL.md">Get the skill</a></div></div>
+      </article>
+      <article class="film vertical">
+        <a class="thumb" href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/social-ad/examples/fernly-reel.mp4"><img loading="lazy" src="https://raw.githubusercontent.com/Neelshah1810/Claude-Video-Skills/main/previews/fernly-reel-preview.gif" alt="Fernly: a video made with the social-ad Claude skill"></a>
+        <div class="meta"><span class="skill">made with social-ad</span><h3>Fernly</h3><p>“Your plant isn’t dramatic.” · vertical 9:16 · 15 s</p>
+          <div class="acts"><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/social-ad/examples/fernly-reel.mp4">▶ Watch the full film</a><a href="https://github.com/Neelshah1810/Claude-Video-Skills/blob/main/social-ad/SKILL.md">Get the skill</a></div></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>The 11 Claude video skills</h2>
+    <p class="sub">Each skill works for any brand, product or idea, with eight style presets and four creative dials: <code>--creativity</code>, <code>--typography</code>, <code>--animation</code> and <code>--motion</code>.</p>
+    <table>
+      <thead><tr><th>Skill</th><th>Use it for</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/motion-film">motion-film</a></td><td>Any motion-graphics video: title sequences, promos, kinetic typography</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/launch-film">launch-film</a></td><td>Product, feature and company launches, announcements, teasers</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/product-walkthrough">product-walkthrough</a></td><td>Product tours, demos, onboarding, screen walkthroughs</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/explainer-video">explainer-video</a></td><td>“How it works” and “what is X” explainers, process and concept videos</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/tutorial-video">tutorial-video</a></td><td>Step-by-step how-tos, help-centre videos, training</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/feature-update">feature-update</a></td><td>What’s new, release notes, changelog videos</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/data-story">data-story</a></td><td>Year-in-review, “wrapped”, KPI and impact reports, investor updates</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/brand-film">brand-film</a></td><td>Manifestos, mission and values films, rebrands, logo stings</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/event-promo">event-promo</a></td><td>Conferences, webinars, meetups, launches, countdowns</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/testimonial-video">testimonial-video</a></td><td>Customer quotes, case studies, social proof</td></tr>
+        <tr><td><a href="https://github.com/Neelshah1810/Claude-Video-Skills/tree/main/social-ad">social-ad</a></td><td>Vertical Reels, TikTok and Shorts ads (1080×1920)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="faq">
+    <h2>FAQ</h2>
+    <details open><summary>What are Claude Video Skills?</summary><p>A free, open-source set of 11 Claude skills that turn Claude into a video studio. Describe a video in plain words and Claude makes a finished motion-graphics film, with kinetic typography, animated UI, charts, transitions and its own music, as an HTML file and an MP4.</p></details>
+    <details><summary>Do I need to know video editing or code?</summary><p>No. Describe the video in plain words. Claude writes the code, renders it and checks every frame for you.</p></details>
+    <details><summary>Do they need an API key or a paid video tool?</summary><p>No. Everything runs with Claude's code execution, Chrome and FFmpeg. The music is synthesized in the film itself. ElevenLabs is only an optional way to add a voiceover.</p></details>
+    <details><summary>Which Claude model works best?</summary><p>Any recent model works, but these skills work best with Claude Opus 5.5.</p></details>
+    <details><summary>Can it use my brand, and make vertical videos?</summary><p>Yes. Share your brand guide, logo and site, and Claude designs to them. The <code>social-ad</code> skill makes 1080×1920 videos for Reels, TikTok and Shorts.</p></details>
+  </section>
+
+  <footer>
+    <div class="star">⭐ If these skills help you, please <a href="https://github.com/Neelshah1810/Claude-Video-Skills">star the repo on GitHub</a></div>
+    <p style="color:var(--muted);margin-top:8px">Stars help other people find it. Ideas, issues and pull requests are welcome.</p>
+    <small>Claude Video Skills is an independent community project, not affiliated with or endorsed by Anthropic. Claude is a trademark of Anthropic. · MIT License</small>
+  </footer>
+</div>
+</body>
+</html>

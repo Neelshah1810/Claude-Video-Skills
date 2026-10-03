@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" shape-rendering="crispEdges">
+  <title>Claude Video Skills</title>
+  <!-- the clapper stick, hinged at the body's top-left corner and flipped open like a hat -->
+  <g transform="rotate(-20 4 9)">
+    <path fill="#D97757" d="M4 6h18v3H4z"/>
+    <path fill="#1A1918" d="M6.2 6h2.3l-2 3H4.2zM11 6h2.3l-2 3H9zM15.8 6h2.3l-2 3h-2.3zM20.6 6H22v.9L20.6 9h-1.8z"/>
+  </g>
+  <!-- the slate body with its striped clapper band -->
+  <path fill="#D97757" d="M4 9h18v11h-1v1H5v-1H4z"/>
+  <path fill="#1A1918" d="M4 9h2.2l-1.4 2.2H4zM8.6 9h2.3l-1.5 2.2H7.1zM13.4 9h2.3l-1.5 2.2h-2.3zM18.2 9h2.3L19 11.2h-2.3z"/>
+  <!-- arms: one raised ("action!"), one relaxed -->
+  <path fill="#D97757" d="M2.6 14H4v1.6H2.6zM1.6 10.6H3.2v4.2H1.6z"/>
+  <path fill="#D97757" d="M22 15h1.6v1.6H22zM23.2 15.8h1.6v2.4h-1.6z"/>
+  <!-- a confident wink: one open eye, one closed -->
+  <path fill="#1A1918" d="M8.6 12.8h2.4v3.2H8.6z"/>
+  <path fill="#FFFFFF" d="M9 13.2h.8v.8H9z"/>
+  <path fill="#1A1918" d="M14.8 14.6h2.8v.8h-2.8zM14.8 13.8h.8v.8h-.8z"/>
+  <!-- a wide, open smile (rounded, no corners) -->
+  <path fill="#1A1918" d="M11 17h4v.8h-4zM11.4 17.8h3.2v.8h-3.2zM12.2 18.6h1.6v.6h-1.6z"/>
+  <path fill="#E8957A" d="M12.2 18h1.6v.6h-1.6z"/>
+  <!-- stubby legs -->
+  <path fill="#D97757" d="M7 21h2.2v3H7zM16.8 21H19v3h-2.2z"/>
+</svg>
