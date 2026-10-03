@@ -15,7 +15,7 @@
 [![Output: HTML + MP4](https://img.shields.io/badge/output-HTML_%2B_MP4-0b7285)](#what-every-film-includes)
 [![MIT license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-🌐 **[Website](https://neelshah1810.github.io/Claude-Video-Skills/)** · [How to use](#how-to-use) · [Gallery](#gallery) · [The 11 skills](#the-11-skills) · [Creative controls](#creative-controls) · [FAQ](#faq)
+ **[Website](https://neelshah1810.github.io/Claude-Video-Skills/)** · [How to use](#how-to-use) · [Gallery](#gallery) · [The 11 skills](#the-11-skills) · [Creative controls](#creative-controls) · [FAQ](#faq)
 
 ⭐ **If you like this, please star the repo.** It helps other people find it.
 
